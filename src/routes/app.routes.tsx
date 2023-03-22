@@ -2,28 +2,16 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { View, Text } from 'react-native'
 import { Coins, HouseSimple, PlusCircle, Tag, User } from 'phosphor-react-native'
 
-const Tab = createBottomTabNavigator()
+import { Home } from '../screens/Home'
+import { Profile } from '../screens/Profile'
+import { Wallet } from '../screens/Wallet'
 
-function Home () {
-  return (
-    <View>
-      <Text>Home</Text>
-    </View>
-  )
-}
+const Tab = createBottomTabNavigator()
 
 function Transaction () {
   return (
     <View className='flex-1 bg-white'>
       <Text>Transaction</Text>
-    </View>
-  )
-}
-
-function Profile () {
-  return (
-    <View>
-      <Text>Profile</Text>
     </View>
   )
 }
@@ -47,6 +35,7 @@ function Category () {
 export function AppRoutes () {
   return (
     <Tab.Navigator
+      initialRouteName='home'
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: '#7F3DFF',
@@ -129,11 +118,11 @@ export function AppRoutes () {
           },
           title: '',
           tabBarIcon: () => (
-            <View className='bg-slate-100 rounded-full'>
+            <View className='bg-light-100 rounded-full'>
               <PlusCircle
-              size={70}
-              color='#7F3DFF'
-              weight='fill'
+                size={70}
+                color='#7F3DFF'
+                weight='fill'
             />
             </View>
           )
@@ -175,6 +164,16 @@ export function AppRoutes () {
               weight={focused ? 'fill' : 'regular'}
             />
           )
+        }}
+      />
+      <Tab.Screen
+        name='wallet'
+        component={Wallet}
+        options={{
+          tabBarButton: () => null,
+          tabBarStyle: {
+            display: 'none'
+          }
         }}
       />
     </Tab.Navigator>
