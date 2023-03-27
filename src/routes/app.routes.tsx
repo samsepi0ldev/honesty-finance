@@ -1,26 +1,41 @@
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import {
+  type BottomTabNavigationProp,
+  createBottomTabNavigator,
+  type BottomTabNavigationEventMap
+} from '@react-navigation/bottom-tabs'
 import { View, Text } from 'react-native'
-import { Coins, HouseSimple, PlusCircle, Tag, User } from 'phosphor-react-native'
+import { HouseSimple, Tag, User } from 'phosphor-react-native'
+import { useEffect } from 'react'
 
 import { Home } from '../screens/Home'
 import { Profile } from '../screens/Profile'
 import { Wallet } from '../screens/Wallet'
+import { NewWallet } from '../screens/NewWallet'
+import { IconNewTransaction } from '../components/IconNewTransaction'
+import TransactionIcon from '../assets/Transaction.svg'
+import { WalletDetails } from '../screens/WalletDetails'
+import { Transactions } from '../screens/Transactions'
+import { FinancialReport } from '../screens/FinancialReport'
+import { NewIncome } from '../screens/NewIncome'
+import { NewExpense } from '../screens/NewExpense'
 
 const Tab = createBottomTabNavigator()
 
-function Transaction () {
-  return (
-    <View className='flex-1 bg-white'>
-      <Text>Transaction</Text>
-    </View>
-  )
+type HomeScreenNavigationProp = BottomTabNavigationProp<BottomTabNavigationEventMap>
+
+interface Props {
+  navigation: HomeScreenNavigationProp
 }
 
-function NewTransaction () {
+function NewTransaction ({ navigation }: Props) {
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('tabPress', e => {
+      e.preventDefault()
+    })
+    return unsubscribe
+  }, [navigation])
   return (
-    <View>
-      <Text>NewTransaction</Text>
-    </View>
+    <View />
   )
 }
 
@@ -36,6 +51,7 @@ export function AppRoutes () {
   return (
     <Tab.Navigator
       initialRouteName='home'
+      backBehavior='history'
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: '#7F3DFF',
@@ -53,10 +69,6 @@ export function AppRoutes () {
           borderRadius: 16,
           borderTopWidth: 0,
           elevation: 0,
-          position: 'absolute',
-          bottom: 10,
-          left: 10,
-          right: 10,
           shadowOffset: {
             width: 0,
             height: 0
@@ -78,18 +90,18 @@ export function AppRoutes () {
             justifyContent: 'center'
           },
           title: 'Inicio',
-          tabBarIcon: ({ color, focused }) => (
+          tabBarIcon: ({ color, focused, size }) => (
             <HouseSimple
-              size={24}
+              size={size}
               color={color}
-              weight={focused ? 'fill' : 'regular'}
+              weight='fill'
             />
           )
         }}
       />
       <Tab.Screen
         name='transaction'
-        component={Transaction}
+        component={Transactions}
         options={{
           tabBarItemStyle: {
             height: 48,
@@ -97,11 +109,12 @@ export function AppRoutes () {
             justifyContent: 'center'
           },
           title: 'Traslações',
-          tabBarIcon: ({ color, focused }) => (
-            <Coins
-              size={24}
+          tabBarIcon: ({ color, focused, size }) => (
+            <TransactionIcon
+              width={size}
+              height={size}
               color={color}
-              weight={focused ? 'fill' : 'regular'}
+              fill={color}
             />
           )
         }}
@@ -113,19 +126,10 @@ export function AppRoutes () {
           tabBarItemStyle: {
             height: 48,
             alignItems: 'center',
-            justifyContent: 'center',
-            marginTop: -10
+            justifyContent: 'center'
           },
           title: '',
-          tabBarIcon: () => (
-            <View className='bg-light-100 rounded-full'>
-              <PlusCircle
-                size={70}
-                color='#7F3DFF'
-                weight='fill'
-            />
-            </View>
-          )
+          tabBarIcon: () => <IconNewTransaction />
         }}
       />
       <Tab.Screen
@@ -138,11 +142,11 @@ export function AppRoutes () {
             justifyContent: 'center'
           },
           title: 'Categorias',
-          tabBarIcon: ({ color, focused }) => (
+          tabBarIcon: ({ color, focused, size }) => (
             <Tag
-              size={24}
+              size={size}
               color={color}
-              weight={focused ? 'fill' : 'regular'}
+              weight='fill'
             />
           )
         }}
@@ -157,11 +161,11 @@ export function AppRoutes () {
             justifyContent: 'center'
           },
           title: 'Perfil',
-          tabBarIcon: ({ color, focused }) => (
+          tabBarIcon: ({ color, focused, size }) => (
             <User
-              size={24}
+              size={size}
               color={color}
-              weight={focused ? 'fill' : 'regular'}
+              weight='fill'
             />
           )
         }}
@@ -172,7 +176,63 @@ export function AppRoutes () {
         options={{
           tabBarButton: () => null,
           tabBarStyle: {
-            display: 'none'
+            display: 'none',
+            opacity: 0
+          }
+        }}
+      />
+      <Tab.Screen
+        name='new-wallet'
+        component={NewWallet}
+        options={{
+          tabBarButton: () => null,
+          tabBarStyle: {
+            display: 'none',
+            opacity: 0
+          }
+        }}
+      />
+      <Tab.Screen
+        name='wallet-details'
+        component={WalletDetails}
+        options={{
+          tabBarButton: () => null,
+          tabBarStyle: {
+            display: 'none',
+            opacity: 0
+          }
+        }}
+      />
+      <Tab.Screen
+        name='financial-report'
+        component={FinancialReport}
+        options={{
+          tabBarButton: () => null,
+          tabBarStyle: {
+            display: 'none',
+            opacity: 0
+          }
+        }}
+      />
+       <Tab.Screen
+        name='new-income'
+        component={NewIncome}
+        options={{
+          tabBarButton: () => null,
+          tabBarStyle: {
+            display: 'none',
+            opacity: 0
+          }
+        }}
+      />
+       <Tab.Screen
+        name='new-expense'
+        component={NewExpense}
+        options={{
+          tabBarButton: () => null,
+          tabBarStyle: {
+            display: 'none',
+            opacity: 0
           }
         }}
       />
