@@ -1,0 +1,1 @@
+- [ ] ScrollView e para ser uma FlatList implementar os titulo com useMemo olhar clone twitchtv da rocketseat
