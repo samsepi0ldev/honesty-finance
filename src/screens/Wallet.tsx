@@ -1,5 +1,6 @@
 import { ImageBackground, View, Text, TouchableOpacity } from 'react-native'
 import { Wallet as WalletIcon } from 'phosphor-react-native'
+import { useNavigation } from '@react-navigation/native'
 
 import { HeaderSimple } from '../components/HeaderSimple'
 import bgImage from '../assets/BG.png'
@@ -24,6 +25,7 @@ const wallets = [
 ]
 
 export function Wallet () {
+  const { navigate } = useNavigation()
   return (
     <View className='flex-1 bg-light-100'>
       <HeaderSimple
@@ -49,10 +51,11 @@ export function Wallet () {
             key={index}
             className='h-20 flex-row items-center justify-between p-4 border-b border-dark-100/10'
             activeOpacity={0.7}
+            onPress={() => navigate('wallet-details')}
           >
             <View className='flex-row items-center'>
               <View className='w-12 h-12 rounded-2xl bg-violet-20 items-center justify-center mr-2'>
-                <WalletIcon size={32} weight='fill' color='#7F3DFF' />
+                <WalletIcon weight='fill' color='#7F3DFF' size={24} />
               </View>
               <Text className='text-lg font-inter-semibold text-dark-50'>
                 {wallet.name}
@@ -65,6 +68,7 @@ export function Wallet () {
         ))}
         <View className='px-4 mt-auto mb-4'>
           <TouchableOpacity
+            onPress={() => navigate('new-wallet')}
             activeOpacity={0.7}
             className='w-full items-center justify-center rounded-2xl bg-violet-100 py-4'
           >

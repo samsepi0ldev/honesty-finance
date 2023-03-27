@@ -3,6 +3,29 @@ import { View, Text } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
 
 import { BoxTransaction } from '../components/BoxTransaction'
+import { BoxIncomeExpanse } from '../components/BoxIcomeExpanse'
+import { Heading } from '../components/Heading'
+
+const transactions = [
+  {
+    category: { name: 'Shopping' },
+    description: 'Comprei alguma coisa na mercearia',
+    price: -32.50,
+    created_at: new Date('2023-02-07T04:31:42.376Z')
+  },
+  {
+    category: { name: 'Inscrição' },
+    description: 'Disney + plano anual',
+    price: -55.90,
+    created_at: new Date('2023-02-07T12:47:31.571Z')
+  },
+  {
+    category: { name: 'Salario' },
+    description: 'Salario da assistência',
+    price: 500,
+    created_at: new Date('2023-02-07T03:14:17.955Z')
+  }
+]
 
 export function Home () {
   return (
@@ -31,14 +54,18 @@ export function Home () {
         <View className='mt-7 flex-row'>
           <BoxTransaction type='income' value={5000} />
           <View className='w-2' />
-          <BoxTransaction type='expense' value={3200} />
+          <BoxTransaction type='expense' value={1200} />
         </View>
       </LinearGradient>
-      <Text className='text-lg text-dark-100 font-inter-semibold leading-10 px-4'>
-        Frequência de gastos
-      </Text>
+      <Heading title='Frequência de gastos' />
       <View>
         <View></View>
+      </View>
+      <Heading title='Transações recentes' />
+      <View className='px-4'>
+        {transactions.map(transaction => (
+          <BoxIncomeExpanse key={transaction.description} data={transaction} />
+        ))}
       </View>
     </View>
   )
