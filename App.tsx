@@ -7,15 +7,16 @@ import {
   Inter_600SemiBold,
   Inter_700Bold
 } from '@expo-google-fonts/inter'
+import { useEffect } from 'react'
 
 import { Routes } from './src/routes'
-import { useEffect } from 'react'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
 
 export default function App () {
   async function navigationBar () {
-    NavigationBar.setBackgroundColorAsync('white')
-    NavigationBar.setBorderColorAsync('#eee')
-    NavigationBar.setButtonStyleAsync('dark')
+    await NavigationBar.setBackgroundColorAsync('white')
+    await NavigationBar.setBorderColorAsync('#eee')
+    await NavigationBar.setButtonStyleAsync('dark')
   }
   const [fontsLoaded] = useFonts({
     Inter_400Regular,
@@ -30,13 +31,13 @@ export default function App () {
 
   if (!fontsLoaded) return null
   return (
-    <>
+    <GestureHandlerRootView style={{ flex: 1 }}>
       <Routes />
       <StatusBar
         style='auto'
-        backgroundColor='transparent'
+        backgroundColor='#FFF6E5'
         translucent
       />
-    </>
+    </GestureHandlerRootView>
   )
 }
