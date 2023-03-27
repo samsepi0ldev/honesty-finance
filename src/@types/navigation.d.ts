@@ -8,6 +8,11 @@ export declare global {
       category: undefined
       profile: undefined
       wallet: undefined
+      'new-wallet': undefined
+      'wallet-details': undefined
+      'financial-report': undefined
+      'new-income': undefined
+      'new-expense': undefined
     }
   }
 }
