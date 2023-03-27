@@ -23,7 +23,8 @@ export const BottomSheet = forwardRef<BottomSheetRefProps, BottomSheetProps>(({ 
     'worklet'
     active.value = destination !== 0
     translateY.value = withSpring(destination, {
-      damping: 50
+      damping: 50,
+      stiffness: 400
     })
   }, [])
 

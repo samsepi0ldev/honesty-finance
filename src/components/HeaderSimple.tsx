@@ -24,12 +24,12 @@ function Header ({ title, backButton, light, ...rest }: HeaderSimpleProps) {
               <ArrowLeft color={ light ? '#fff' : '#212325'} size={32} />
             </TouchableOpacity>
             )
-          : <View className='w-8 h-8' />}
+          : <View className='w-12 h-12' />}
         <Text className={clsx('text-lg font-inter-semibold', {
           'text-dark-50': !light,
           'text-light-100': light
         })}>{title}</Text>
-        <View className='w-8 h-8' />
+        <View className='w-12 h-12' />
       </View>
   )
 }

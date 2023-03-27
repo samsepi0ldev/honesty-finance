@@ -88,7 +88,9 @@ export function NewIncome () {
               </TouchableWithoutFeedback>
               )
           }
-          <TouchableOpacity className='mt-6 bg-violet-100 items-center justify-center h-14 rounded-2xl'>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            className='mt-6 bg-violet-100 items-center justify-center h-14 rounded-2xl'>
             <Text className='text-lg text-light-80 font-inter-semibold'>Continuar</Text>
           </TouchableOpacity>
         </View>
