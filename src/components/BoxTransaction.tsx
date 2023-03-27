@@ -16,7 +16,7 @@ export function BoxTransaction ({ type, value }: BoxTransactionProps) {
       'bg-red-100': type === 'expense'
     })}>
       <View className='bg-light-80 w-12 h-12 items-center justify-center rounded-2xl'>
-        {type === 'income' ? <IncomeIcon width={32} /> : <ExpenseIcon width={32} />}
+        {type === 'income' ? <IncomeIcon fill='#00A86B' width={32} /> : <ExpenseIcon fill='#FD3C4A' width={32} />}
       </View>
       <View className='ml-2.5'>
         <Text className='text-sm font-inter-medium text-light-80'>

@@ -2,6 +2,7 @@ import { useNavigation } from '@react-navigation/native'
 import { ArrowLeft } from 'phosphor-react-native'
 import { View, Text, TouchableOpacity } from 'react-native'
 import { styled } from 'nativewind'
+import clsx from 'clsx'
 
 interface HeaderSimpleProps {
   title: string
@@ -9,7 +10,7 @@ interface HeaderSimpleProps {
   light?: boolean
 }
 
-function Header ({ title, backButton, ...rest }: HeaderSimpleProps) {
+function Header ({ title, backButton, light, ...rest }: HeaderSimpleProps) {
   const { goBack } = useNavigation()
   return (
       <View className='flex-row items-center justify-between h-16 p-4' {...rest}>
@@ -18,12 +19,16 @@ function Header ({ title, backButton, ...rest }: HeaderSimpleProps) {
             <TouchableOpacity
               activeOpacity={0.6}
               onPress={goBack}
+              className='w-12 h-12 items-center justify-center'
             >
-              <ArrowLeft color='#464A4D' size={32} />
+              <ArrowLeft color={ light ? '#fff' : '#212325'} size={32} />
             </TouchableOpacity>
             )
           : <View className='w-8 h-8' />}
-        <Text className='text-lg font-inter-semibold text-dark-50'>{title}</Text>
+        <Text className={clsx('text-lg font-inter-semibold', {
+          'text-dark-50': !light,
+          'text-light-100': light
+        })}>{title}</Text>
         <View className='w-8 h-8' />
       </View>
   )
