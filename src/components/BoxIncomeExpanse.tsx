@@ -1,7 +1,7 @@
 import clsx from 'clsx'
 import dayjs from 'dayjs'
 import { View, Text } from 'react-native'
-import { Coins, Car, ForkKnife, ScribbleLoop, ShoppingBag, Sword } from 'phosphor-react-native'
+import { Coins, Car, ForkKnife, ScribbleLoop, Sword, Bag } from 'phosphor-react-native'
 
 interface Transaction {
   category: {
@@ -51,7 +51,7 @@ const categories = {
   },
   shopping: {
     name: 'Shopping',
-    lib: ShoppingBag,
+    lib: Bag,
     color: {
       primary: 'bg-yellow-20',
       accent: '#FCAC12'
@@ -64,7 +64,7 @@ export function BoxIncomeExpanse ({ data }: BoxIncomeExpanseProps) {
   const { lib: Icon, color } = Object
     .values(categories)
     .find(category => category.name.includes(data.category.name)) ??
-      { lib: Sword, color: categories.subscription.color } as any
+      { lib: Sword, color: { primary: 'bg-light-40', accent: '#0D0E0F' } } as any
   return (
     <View className='px-4 mb-4 py-3.5 bg-light-80 rounded-3xl items-center justify-between flex-row'>
       <View className='flex-row items-center'>
@@ -87,7 +87,7 @@ export function BoxIncomeExpanse ({ data }: BoxIncomeExpanseProps) {
           'text-red-100': data.price < 0,
           'text-green-100': data.price > 0
         })}>
-          {data.price.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
+          {(data.price >= 0 ? '+ ' : '- ') + data.price.toLocaleString('en-US', { style: 'currency', currency: 'USD' }).replace('-', '')}
         </Text>
         <Text className='text-xs text-light-20 font-inter-medium'>{hours}</Text>
       </View>
