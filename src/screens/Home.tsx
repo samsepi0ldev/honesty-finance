@@ -1,10 +1,11 @@
 import { CaretDown } from 'phosphor-react-native'
-import { View, Text } from 'react-native'
+import { View, Text, FlatList } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
 
 import { BoxTransaction } from '../components/BoxTransaction'
-import { BoxIncomeExpanse } from '../components/BoxIcomeExpanse'
+import { BoxIncomeExpanse } from '../components/BoxIncomeExpanse'
 import { Heading } from '../components/Heading'
+import { useMemo } from 'react'
 
 const transactions = [
   {
@@ -24,10 +25,48 @@ const transactions = [
     description: 'Salario da assistência',
     price: 500,
     created_at: new Date('2023-02-07T03:14:17.955Z')
+  },
+  {
+    category: { name: 'Investimento' },
+    description: 'Investimento no PicPay',
+    price: 1.75,
+    created_at: new Date('2023-02-07T03:14:17.955Z')
+  },
+  {
+    category: { name: 'Serviço' },
+    description: 'Desbloqueio de celular',
+    price: 15,
+    created_at: new Date('2023-02-07T03:14:17.955Z')
   }
 ]
+type OptimizationProps = {
+  key: string
+  render: () => JSX.Element
+  isTitle?: boolean
+}
 
 export function Home () {
+  const { data, indices } = useMemo(() => {
+    const data: OptimizationProps[] = [
+      {
+        key: 'HEADING_SPEND_FREQUENCY',
+        render: () => <Heading title='Frequência de gastos' />
+      },
+      {
+        key: 'HEADING_RECENT_TRANSLATIONS',
+        render: () => <Heading title='Transações recentes' />,
+        isTitle: true
+      },
+      {
+        key: 'RECENT_TRANSLATIONS_COMPONENTS',
+        render: () => <View className='px-4'>
+          {transactions.map((transaction, i) => <BoxIncomeExpanse key={i} data={transaction} />)}
+        </View>
+      }
+    ]
+    const indices = data.filter(item => !item.isTitle).map((_, i) => i)
+    return { data, indices }
+  }, [])
   return (
     <View className='bg-light-100 flex-1'>
       <LinearGradient
@@ -40,7 +79,7 @@ export function Home () {
         }}
       >
         <View className='justify-center items-center h-16'>
-          <View className='flex-row items-center'>
+          <View className='flex-row items-center border border-light-60 h-10 px-4 rounded-full'>
             <CaretDown size={24} color='#7F3DFF' />
             <Text className='text-sm font-inter-medium text-dark-50'>outubro</Text>
           </View>
@@ -57,16 +96,12 @@ export function Home () {
           <BoxTransaction type='expense' value={1200} />
         </View>
       </LinearGradient>
-      <Heading title='Frequência de gastos' />
-      <View>
-        <View></View>
-      </View>
-      <Heading title='Transações recentes' />
-      <View className='px-4'>
-        {transactions.map(transaction => (
-          <BoxIncomeExpanse key={transaction.description} data={transaction} />
-        ))}
-      </View>
+      <FlatList<OptimizationProps>
+        data={data}
+        keyExtractor={item => item.key}
+        renderItem={({ item }) => item.render()}
+        stickyHeaderIndices={indices}
+      />
     </View>
   )
 }

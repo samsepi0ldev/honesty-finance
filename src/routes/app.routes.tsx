@@ -18,6 +18,10 @@ import { Transactions } from '../screens/Transactions'
 import { FinancialReport } from '../screens/FinancialReport'
 import { NewIncome } from '../screens/NewIncome'
 import { NewExpense } from '../screens/NewExpense'
+import { Login } from '../screens/Login'
+import { SignUp } from '../screens/SignUp'
+import { EditWallet } from '../screens/EditWallet'
+import { Onboarding } from '../screens/Onboarding'
 
 const Tab = createBottomTabNavigator()
 
@@ -50,7 +54,7 @@ function Category () {
 export function AppRoutes () {
   return (
     <Tab.Navigator
-      initialRouteName='home'
+      initialRouteName='onboarding'
       backBehavior='history'
       screenOptions={{
         headerShown: false,
@@ -80,6 +84,39 @@ export function AppRoutes () {
       }}
 
     >
+      <Tab.Screen
+        name='onboarding'
+        component={Onboarding}
+        options={{
+          tabBarButton: () => null,
+          tabBarStyle: {
+            display: 'none',
+            opacity: 0
+          }
+        }}
+      />
+      <Tab.Screen
+        name='login'
+        component={Login}
+        options={{
+          tabBarButton: () => null,
+          tabBarStyle: {
+            display: 'none',
+            opacity: 0
+          }
+        }}
+      />
+      <Tab.Screen
+        name='sign-up'
+        component={SignUp}
+        options={{
+          tabBarButton: () => null,
+          tabBarStyle: {
+            display: 'none',
+            opacity: 0
+          }
+        }}
+      />
       <Tab.Screen
         name='home'
         component={Home}
@@ -195,6 +232,17 @@ export function AppRoutes () {
       <Tab.Screen
         name='wallet-details'
         component={WalletDetails}
+        options={{
+          tabBarButton: () => null,
+          tabBarStyle: {
+            display: 'none',
+            opacity: 0
+          }
+        }}
+      />
+      <Tab.Screen
+        name='edit-wallet'
+        component={EditWallet}
         options={{
           tabBarButton: () => null,
           tabBarStyle: {

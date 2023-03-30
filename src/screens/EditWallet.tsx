@@ -1,10 +1,9 @@
-import { CaretDown, CheckCircle } from 'phosphor-react-native'
+import { useNavigation } from '@react-navigation/native'
+import { ArrowLeft, CaretDown, CheckCircle, Trash } from 'phosphor-react-native'
 import { useCallback, useRef, useState } from 'react'
-import { View, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback } from 'react-native'
+import { TouchableOpacity, View, Text, TextInput, TouchableWithoutFeedback } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import { BottomSheet, type BottomSheetRefProps } from '../components/BottomSheet'
-
-import { HeaderSimple } from '../components/HeaderSimple'
 
 const walletsTypes = [
   {
@@ -36,7 +35,9 @@ const walletsTypes = [
     label: 'Fundo de Emergência'
   }
 ]
-export function NewWallet () {
+
+export function EditWallet () {
+  const { goBack } = useNavigation()
   const [walletType, setWalletType] = useState('')
   const refBottomSheet = useRef<BottomSheetRefProps>(null)
   const openBottomSheep = useCallback(() => {
@@ -44,27 +45,31 @@ export function NewWallet () {
   }, [])
   return (
     <View className='flex-1 bg-violet-100'>
-      <HeaderSimple
-        title='Adicionar nova carteira'
-        backButton
-        light
-      />
+      <View className='flex-row items-center justify-between h-16 p-4'>
+        <TouchableOpacity
+          activeOpacity={0.6}
+          onPress={goBack}
+          className='w-12 h-12 items-center justify-center'
+        >
+          <ArrowLeft color='#fff' size={32} />
+        </TouchableOpacity>
+        <Text className='text-lg font-inter-semibold text-light-100'>Detalhes da carteira</Text>
+        <TouchableOpacity
+          activeOpacity={0.6}
+          onPress={() => {}}
+          className='w-12 h-12 items-center justify-center'
+        >
+          <Trash color='#fff' weight='fill' size={32} />
+        </TouchableOpacity>
+      </View>
       <ScrollView
+        showsHorizontalScrollIndicator={false}
         contentContainerStyle={{
           marginTop: 'auto'
         }}>
-        <View className='px-4'>
-          <Text className='font-inter-semibold text-lg text-light-80/60'>Quantidade</Text>
-          <TextInput
-            className='font-inter-semibold text-6xl text-light-80'
-            placeholderTextColor='#FCFCFC'
-            placeholder='$00.0'
-            keyboardType='numeric'
-          />
-        </View>
         <View className='bg-light-100 rounded-t-3xl py-6 px-4'>
-          <TextInput
-            className='w-full h-14 border border-light-60 rounded-2xl pl-4 text-dark-50 text-base font-inter-regular'
+        <TextInput
+            className='mt-4 w-full h-14 border border-light-60 rounded-2xl pl-4 text-dark-50 text-base font-inter-regular'
             placeholder='Nome'
             placeholderTextColor='#91919F'
           />
@@ -76,15 +81,10 @@ export function NewWallet () {
                   <Text className='font-inter-medium text-sm text-dark-50'>{walletType}</Text>
                 </View>
                   )
-                : <Text className='text-light-20 font-inter-regular text-base'>Typo da carteira</Text>}
+                : <Text className='text-light-20 font-inter-regular text-base'>Tipo da carteira</Text>}
               <CaretDown size={24} color='#91919F' />
             </View>
           </TouchableWithoutFeedback>
-          <TouchableOpacity
-            activeOpacity={0.7}
-            className='mt-6 bg-violet-100 items-center justify-center h-14 rounded-2xl'>
-            <Text className='text-lg text-light-80 font-inter-semibold'>Continuar</Text>
-          </TouchableOpacity>
         </View>
       </ScrollView>
       <BottomSheet ref={refBottomSheet}>

@@ -50,7 +50,10 @@ export function IconNewTransaction () {
         className='absolute left-1 bottom-1'
         style={animatedStyles(true, true, 64, true)}>
         <TouchableOpacity
-          onPress={() => navigate('new-income')}
+          onPress={() => {
+            navigate('new-income')
+            setFabIsOpened(false)
+          }}
           activeOpacity={0.7}
           className='bg-green-100 w-14 h-14 rounded-full items-center justify-center'>
           <IncomeIcon fill='#fff' />
@@ -60,7 +63,10 @@ export function IconNewTransaction () {
         className='absolute left-1 bottom-1'
         style={animatedStyles(true, true, 64)}>
         <TouchableOpacity
-          onPress={() => navigate('new-expense')}
+          onPress={() => {
+            navigate('new-expense')
+            setFabIsOpened(false)
+          }}
           activeOpacity={0.7}
           className='bg-red-100 w-14 h-14 rounded-full items-center justify-center'>
           <ExpenseIcon fill='#fff' />

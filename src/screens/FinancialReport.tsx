@@ -2,7 +2,7 @@ import clsx from 'clsx'
 import { CaretDown, ChartLine, ChartPie, SortAscending, SortDescending } from 'phosphor-react-native'
 import { useCallback, useState } from 'react'
 import { TouchableOpacity, View, Text, ScrollView } from 'react-native'
-import { BoxIncomeExpanse } from '../components/BoxIcomeExpanse'
+import { BoxIncomeExpanse } from '../components/BoxIncomeExpanse'
 
 import { HeaderSimple } from '../components/HeaderSimple'
 
@@ -61,6 +61,7 @@ export function FinancialReport () {
             </TouchableOpacity>
           </View>
         </View>
+        <Text className='text-3xl font-inter-semibold text-dark-100 px-4'>$ 433</Text>
       </View>
       <View className='flex-row mx-4 my-2 bg-violet-20 h-14 rounded-full p-1'>
         <TouchableOpacity
