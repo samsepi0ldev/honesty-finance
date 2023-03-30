@@ -13,6 +13,9 @@ export declare global {
       'financial-report': undefined
       'new-income': undefined
       'new-expense': undefined
+      'login': undefined
+      'sign-up': undefined
+      'edit-wallet': undefined
     }
   }
 }
