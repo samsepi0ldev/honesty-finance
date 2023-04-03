@@ -1,7 +1,11 @@
 - [x] ScrollView e para ser uma FlatList implementar os titulo com useMemo olhar clone twitchtv da rocketseat
-- [ ] Adicionar o chart para manipular os gráficos
-- [ ] Adicionar a animação para excluir a translação na screen translation
+- [x] Adicionar o chart para manipular os gráficos
+- [x] Criar tela de detalhe da translação
+- [x] Criar carrousel para informações na tela inicial
+- [ ] Criar pagina de categorias
 - [ ] Criar a pagina de configuração
 - [ ] Criar a pagina e as funções para exportar dados
-- [x] Criar carrousel para informações na tela inicial
 - [ ] Criar ícones para os nomes das carteiras os mais usados
+- [x] Criar componente de camera e permissões
+- [x] Todos locais que tem Botão substituir para o criado personalizado
+- [x] Criar componente de sucesso ou error

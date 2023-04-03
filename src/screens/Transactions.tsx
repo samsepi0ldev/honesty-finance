@@ -1,68 +1,85 @@
 import dayjs from 'dayjs'
-import { useNavigation } from '@react-navigation/native'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { CaretRight } from 'phosphor-react-native'
 import { useMemo } from 'react'
-import { View, Text, TouchableHighlight, FlatList } from 'react-native'
+import { View, Text, TouchableHighlight, StatusBar } from 'react-native'
 
 import { BoxIncomeExpanse } from '../components/BoxIncomeExpanse'
 import { HeaderFilter } from '../components/HeaderFilter'
 import { Heading } from '../components/Heading'
+import { FlatList } from 'react-native-gesture-handler'
 
 const transactions = [
   {
     id: generateUUID(),
     category: { name: 'Shopping' },
+    wallet: { name: 'PicPay' },
     description: 'Comprei alguma coisa na mercearia',
-    price: -32.50,
+    value: 32.50,
+    type: 'expense',
     created_at: new Date('2023-03-30T04:31:42.376Z')
   },
   {
     id: generateUUID(),
     category: { name: 'Inscrição' },
+    wallet: { name: 'PicPay' },
     description: 'Disney + plano anual',
-    price: -55.90,
+    value: 55.90,
+    type: 'expense',
     created_at: new Date('2023-03-30T12:47:31.571Z')
   },
   {
     id: generateUUID(),
     category: { name: 'Salario' },
+    wallet: { name: 'PicPay' },
     description: 'Assistência',
-    price: 654,
+    value: 654,
+    type: 'income',
     created_at: new Date('2023-03-29T04:31:42.376Z')
   },
   {
     id: generateUUID(),
     category: { name: 'Comida' },
+    wallet: { name: 'PicPay' },
     description: 'Comprei um pastel',
-    price: -8.50,
+    value: 8.50,
+    type: 'expense',
     created_at: new Date('2023-03-28T20:03:52.811Z')
   },
   {
     id: generateUUID(),
     category: { name: 'Renda passiva' },
+    wallet: { name: 'PicPay' },
     description: 'UI8 Vendas',
-    price: 500,
+    value: 500,
+    type: 'income',
     created_at: new Date('2023-03-27T20:03:52.811Z')
   },
   {
     id: generateUUID(),
     category: { name: 'Inscrição' },
+    wallet: { name: 'PicPay' },
     description: 'Disney + plano anual',
-    price: -55.90,
+    value: 55.90,
+    type: 'expense',
     created_at: new Date('2023-03-26T12:47:31.571Z')
   },
   {
     id: generateUUID(),
     category: { name: 'Comida' },
+    wallet: { name: 'PicPay' },
     description: 'Comprei um pastel',
-    price: -8.50,
+    value: 8.50,
+    type: 'expense',
     created_at: new Date('2023-03-07T20:03:52.811Z')
   },
   {
     id: generateUUID(),
     category: { name: 'Comida' },
+    wallet: { name: 'PicPay' },
     description: 'Comprei o almoço',
-    price: -10.50,
+    value: 10.50,
+    type: 'expense',
     created_at: new Date('2023-03-07T20:03:52.811Z')
   }
 ]
@@ -179,6 +196,10 @@ export function Transactions () {
     data.forEach((item, i) => item.isTitle && indices.push(i))
     return { data, indices }
   }, [])
+  useFocusEffect(() => {
+    StatusBar.setBackgroundColor('#fff')
+    StatusBar.setBarStyle('dark-content')
+  })
   return (
     <View className='flex-1 bg-light-100'>
       <HeaderFilter />
@@ -199,6 +220,7 @@ export function Transactions () {
         showsVerticalScrollIndicator={false}
         onRefresh={() => {}}
         refreshing={false}
+        scrollEventThrottle={16}
       />
     </View>
   )

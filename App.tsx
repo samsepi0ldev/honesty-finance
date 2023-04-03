@@ -1,4 +1,4 @@
-import { StatusBar } from 'expo-status-bar'
+import { StatusBar } from 'react-native'
 import * as NavigationBar from 'expo-navigation-bar'
 import {
   useFonts,
@@ -11,6 +11,8 @@ import { useEffect } from 'react'
 
 import { Routes } from './src/routes'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
+
+import './src/lib/dayjs'
 
 export default function App () {
   async function navigationBar () {
@@ -34,7 +36,7 @@ export default function App () {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Routes />
       <StatusBar
-        style='auto'
+        barStyle='dark-content'
         backgroundColor='#FFF6E5'
         translucent
       />

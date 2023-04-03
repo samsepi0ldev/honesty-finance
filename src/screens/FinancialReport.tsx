@@ -1,40 +1,120 @@
 import clsx from 'clsx'
 import { CaretDown, ChartLine, ChartPie, SortAscending, SortDescending } from 'phosphor-react-native'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { TouchableOpacity, View, Text, ScrollView } from 'react-native'
 import { BoxIncomeExpanse } from '../components/BoxIncomeExpanse'
+import { Chart } from '../components/Chart'
 
 import { HeaderSimple } from '../components/HeaderSimple'
+import { Pie } from '../components/Pie'
 
 const transactions = [
   {
-    category: { name: 'Inscrição' },
-    description: 'Disney + plano anual',
-    price: -55.90,
-    created_at: new Date('2023-02-07T12:47:31.571Z')
-  },
-  {
+    id: '1',
     category: { name: 'Shopping' },
+    wallet: { name: 'PicPay' },
     description: 'Comprei alguma coisa na mercearia',
-    price: -32.50,
-    created_at: new Date('2023-02-07T04:31:42.376Z')
+    value: 32.50,
+    type: 'expense',
+    created_at: new Date('2023-03-30T04:31:42.376Z')
   },
   {
+    id: '2',
+    category: { name: 'Inscrição' },
+    wallet: { name: 'PicPay' },
+    description: 'Disney + plano anual',
+    value: 55.90,
+    type: 'expense',
+    created_at: new Date('2023-03-30T12:47:31.571Z')
+  },
+  {
+    id: '3',
+    category: { name: 'Salario' },
+    wallet: { name: 'PicPay' },
+    description: 'Assistência',
+    value: 654,
+    type: 'income',
+    created_at: new Date('2023-03-29T04:31:42.376Z')
+  },
+  {
+    id: '4',
     category: { name: 'Comida' },
+    wallet: { name: 'PicPay' },
     description: 'Comprei um pastel',
-    price: -8.50,
-    created_at: new Date('2023-02-07T20:03:52.811Z')
+    value: 8.50,
+    type: 'expense',
+    created_at: new Date('2023-03-28T20:03:52.811Z')
+  },
+  {
+    id: '5',
+    category: { name: 'Renda passiva' },
+    wallet: { name: 'PicPay' },
+    description: 'UI8 Vendas',
+    value: 500,
+    type: 'income',
+    created_at: new Date('2023-03-27T20:03:52.811Z')
+  },
+  {
+    id: '6',
+    category: { name: 'Inscrição' },
+    wallet: { name: 'PicPay' },
+    description: 'Disney + plano anual',
+    value: 55.90,
+    type: 'expense',
+    created_at: new Date('2023-03-26T12:47:31.571Z')
+  },
+  {
+    id: '7',
+    category: { name: 'Comida' },
+    wallet: { name: 'PicPay' },
+    description: 'Comprei um pastel',
+    value: 8.50,
+    type: 'expense',
+    created_at: new Date('2023-03-07T20:03:52.811Z')
+  },
+  {
+    id: '8',
+    category: { name: 'Comida' },
+    wallet: { name: 'PicPay' },
+    description: 'Comprei o almoço',
+    value: 10.50,
+    type: 'expense',
+    created_at: new Date('2023-03-07T20:03:52.811Z')
   }
 ]
 
 export function FinancialReport () {
   const [translationType, setTranslationType] = useState('income')
-  const [translationOrder, setTranslationOrder] = useState('desc')
+  const [translationOrder, setTranslationOrder] = useState('asc')
   const [translationGraph, setTranslationGraph] = useState('line')
+  const [transaction, setTransaction] = useState<typeof transactions>(transactions)
+  const dataForGraph = transaction.map(t => ({
+    x: t.category.name,
+    y: t.value
+  }))
   const toggleTranslationOrder = useCallback(() => {
     const orders = ['asc', 'desc']
     setTranslationOrder(orders.filter(order => order !== translationOrder)[0])
+    orderTransactions()
   }, [translationOrder])
+
+  useEffect(() => {
+    setTransaction(transactions.filter(transaction => transaction.type === 'income'))
+  }, [])
+  const orderTransactions = useCallback(() => {
+    if (translationOrder === 'desc') {
+      return setTransaction(transactions => transactions.sort((a, b) => {
+        if (a.value < b.value) return -1
+        if (a.value > b.value) return 1
+        return 0
+      }))
+    }
+    setTransaction(transactions => transactions.sort((a, b) => {
+      if (a.value > b.value) return -1
+      if (a.value < b.value) return 1
+      return 0
+    }))
+  }, [translationOrder, translationType])
   return (
     <View className='flex-1 bg-light-100'>
       <HeaderSimple title='Relatório financeiro' backButton />
@@ -61,22 +141,30 @@ export function FinancialReport () {
             </TouchableOpacity>
           </View>
         </View>
-        <Text className='text-3xl font-inter-semibold text-dark-100 px-4'>$ 433</Text>
+        { translationGraph === 'pine' ? <Pie data={dataForGraph} /> : <Chart data={dataForGraph}/>}
       </View>
       <View className='flex-row mx-4 my-2 bg-violet-20 h-14 rounded-full p-1'>
         <TouchableOpacity
           activeOpacity={0.7}
-          onPress={() => setTranslationType('expanse')}
+          onPress={() => {
+            setTranslationType('expense')
+            setTransaction(transactions.filter(transaction => transaction.type === 'expense'))
+            orderTransactions()
+          }}
           className={clsx('flex-1 items-center justify-center rounded-full', {
-            'bg-violet-100': translationType === 'expanse'
+            'bg-violet-100': translationType === 'expense'
           })}>
           <Text className={clsx('text-base font-inter-medium text-dark-100', {
-            'text-light-80': translationType === 'expanse'
+            'text-light-80': translationType === 'expense'
           })}>Despesas</Text>
         </TouchableOpacity>
         <TouchableOpacity
           activeOpacity={0.7}
-          onPress={() => setTranslationType('income')}
+          onPress={() => {
+            setTranslationType('income')
+            setTransaction(transactions.filter(transaction => transaction.type === 'income'))
+            orderTransactions()
+          }}
           className={clsx('flex-1 items-center justify-center rounded-full', {
             'bg-violet-100': translationType === 'income'
           })}>
@@ -93,14 +181,14 @@ export function FinancialReport () {
         <TouchableOpacity
           onPress={toggleTranslationOrder}
           className='w-10 h-10 rounded-lg border border-light-60 items-center justify-center'>
-          {translationOrder === 'desc' ? <SortAscending size={24} weight='bold' /> : <SortDescending size={24} weight='bold' />}
+          {translationOrder === 'desc' ? <SortDescending size={24} weight='bold' /> : <SortAscending size={24} weight='bold' />}
         </TouchableOpacity>
       </View>
       <ScrollView>
-        {transactions.map((transaction, i) => (
+        {transaction.map((t, i) => (
           <BoxIncomeExpanse
             key={i}
-            data={transaction} />
+            data={t} />
         ))}
       </ScrollView>
     </View>

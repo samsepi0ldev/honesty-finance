@@ -1,8 +1,10 @@
+import { useFocusEffect } from '@react-navigation/native'
 import { CaretDown, CheckCircle } from 'phosphor-react-native'
 import { useCallback, useRef, useState } from 'react'
-import { View, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback } from 'react-native'
+import { View, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, StatusBar } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import { BottomSheet, type BottomSheetRefProps } from '../components/BottomSheet'
+import { Button } from '../components/Button'
 
 import { HeaderSimple } from '../components/HeaderSimple'
 
@@ -42,6 +44,10 @@ export function NewWallet () {
   const openBottomSheep = useCallback(() => {
     refBottomSheet.current?.scrollTo(-200)
   }, [])
+  useFocusEffect(() => {
+    StatusBar.setBackgroundColor('#7F3DFF')
+    StatusBar.setBarStyle('light-content')
+  })
   return (
     <View className='flex-1 bg-violet-100'>
       <HeaderSimple
@@ -80,11 +86,11 @@ export function NewWallet () {
               <CaretDown size={24} color='#91919F' />
             </View>
           </TouchableWithoutFeedback>
-          <TouchableOpacity
-            activeOpacity={0.7}
-            className='mt-6 bg-violet-100 items-center justify-center h-14 rounded-2xl'>
-            <Text className='text-lg text-light-80 font-inter-semibold'>Continuar</Text>
-          </TouchableOpacity>
+          <Button
+            className='mt-6'
+            onPress={() => alert('Add new wallet coming soon')}>
+            Continuar
+          </Button>
         </View>
       </ScrollView>
       <BottomSheet ref={refBottomSheet}>

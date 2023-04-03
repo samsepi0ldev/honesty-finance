@@ -1,0 +1,14 @@
+<svg>
+    <defs>
+      <linearGradient>
+        <stop offset="0%" stop-color="#190b28" />
+        <stop offset="25%" stop-color="#190b28" />
+        <stop offset="25%" stop-color="#434238" />
+        <stop offset="50%" stop-color="#434238" />
+        <stop offset="50%" stop-color="#334110" />
+        <stop offset="75%" stop-color="#334110" />
+        <stop offset="75%" stop-color="#524800" />
+        <stop offset="100%" stop-color="#524800" />
+      </linearGradient>
+    </defs>
+</svg>

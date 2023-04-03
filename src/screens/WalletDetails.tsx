@@ -1,8 +1,8 @@
-import { useNavigation } from '@react-navigation/native'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import dayjs from 'dayjs'
 import { ArrowLeft, PencilSimple } from 'phosphor-react-native'
 import { useMemo } from 'react'
-import { View, Text, FlatList, TouchableOpacity } from 'react-native'
+import { View, Text, FlatList, TouchableOpacity, StatusBar } from 'react-native'
 import { BoxIncomeExpanse } from '../components/BoxIncomeExpanse'
 
 import { Heading } from '../components/Heading'
@@ -11,43 +11,55 @@ const transactions = [
   {
     id: generateUUID(),
     category: { name: 'Shopping' },
+    wallet: { name: 'PicPay' },
     description: 'Comprei alguma coisa na mercearia',
-    price: -32.50,
+    value: 32.50,
+    type: 'expense',
     created_at: new Date('2023-02-07T04:31:42.376Z')
   },
   {
     id: generateUUID(),
     category: { name: 'Inscrição' },
+    wallet: { name: 'PicPay' },
     description: 'Disney + plano anual',
-    price: -55.90,
+    value: 55.90,
+    type: 'expense',
     created_at: new Date('2023-02-07T12:47:31.571Z')
   },
   {
     id: generateUUID(),
     category: { name: 'Comida' },
+    wallet: { name: 'PicPay' },
     description: 'Comprei um pastel',
-    price: -8.50,
+    value: 8.50,
+    type: 'expense',
     created_at: new Date('2023-02-07T20:03:52.811Z')
   },
   {
     id: generateUUID(),
     category: { name: 'Salario' },
+    wallet: { name: 'PicPay' },
     description: 'Salario da assistência',
-    price: 500,
+    value: 500,
+    type: 'income',
     created_at: new Date('2023-02-07T03:14:17.955Z')
   },
   {
     id: generateUUID(),
     category: { name: 'Transporte' },
+    wallet: { name: 'PicPay' },
     description: 'Uber para casa',
-    price: -18,
+    value: 18,
+    type: 'expense',
     created_at: new Date('2023-02-07T21:58:08.247Z')
   },
   {
     id: generateUUID(),
     category: { name: 'Investimentos' },
+    wallet: { name: 'PicPay' },
     description: 'Picpay investimentos',
-    price: 44.89,
+    value: 44.89,
+    type: 'income',
     created_at: new Date('2023-02-07T16:58:25.247Z')
   }
 ]
@@ -160,6 +172,11 @@ export function WalletDetails () {
     data.forEach((item, i) => item.isTitle && indices.push(i))
     return { data, indices }
   }, [])
+
+  useFocusEffect(() => {
+    StatusBar.setBackgroundColor('#fff')
+    StatusBar.setBarStyle('dark-content')
+  })
   return (
     <View className='flex-1 bg-light-100'>
       <View className='flex-row items-center justify-between h-16 p-4'>

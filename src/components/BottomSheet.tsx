@@ -50,7 +50,7 @@ export const BottomSheet = forwardRef<BottomSheetRefProps, BottomSheetProps>(({ 
       if (translateY.value > (-SCREEN_HEIGHT / 4) + 100) {
         scrollTo(0)
       } else {
-        scrollTo(-200)
+        scrollTo(MAX_TRANSLATE_Y)
       }
     })
   const animatedStyles = useAnimatedStyle(() => {
@@ -87,11 +87,11 @@ export const BottomSheet = forwardRef<BottomSheetRefProps, BottomSheetProps>(({ 
             height: SCREEN_HEIGHT / 4,
             top: SCREEN_HEIGHT
           }, animatedStyles]}
-          className='bg-light-100 w-full absolute mt-auto p-4 pt-1.5 rounded-t-3xl'>
-          <View className='h-6 w-20 items-center justify-center mx-auto'>
+          className='bg-light-100 w-full absolute mt-auto p-4 pt-0 rounded-t-3xl'>
+          <View className='h-6 w-full items-center justify-center mx-auto'>
             <View className='h-1 w-9 bg-violet-40 rounded-full' />
           </View>
-          <View className='flex-row mt-7'>
+          <View className='flex-row items-center justify-center'>
             {children}
           </View>
         </Animated.View>

@@ -1,9 +1,14 @@
-import { useNavigation } from '@react-navigation/native'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { PencilSimple, Wallet, GearSix, UploadSimple, SignOut } from 'phosphor-react-native'
-import { Image, View, Text, TouchableOpacity } from 'react-native'
+import { Image, View, Text, TouchableOpacity, StatusBar } from 'react-native'
 
 export function Profile () {
   const { navigate } = useNavigation()
+
+  useFocusEffect(() => {
+    StatusBar.setBackgroundColor('#F6F6F6')
+    StatusBar.setBarStyle('dark-content')
+  })
   return (
     <View className='flex-1 p-5 bg-background-100'>
       <View className='flex-row items-center justify-between mt-8'>

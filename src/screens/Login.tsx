@@ -23,7 +23,7 @@ export function Login () {
           placeholderTextColor='#91919F'
         />
         <TouchableOpacity
-          onPress={() => navigate('home')}
+          onPress={() => navigate('main')}
           activeOpacity={0.7}
           className='mt-10 w-full h-14 items-center justify-center rounded-lg bg-violet-100'>
             <Text className='text-lg font-inter-semibold text-light-80'>Entrar</Text>

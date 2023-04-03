@@ -62,18 +62,8 @@ export function StackRoutes () {
         headerShown: false
       }}
     >
-      <Stack.Screen name='onboarding' component={Onboarding} />
-      <Stack.Screen name='login' component={Login} />
-      <Stack.Screen name='sign-up' component={SignUp} />
-      <Stack.Screen name='main' component={AppRoutes} />
-      <Stack.Screen name='wallet' component={Wallet} />
-      <Stack.Screen name='new-wallet' component={NewWallet} />
-      <Stack.Screen name='wallet-details' component={WalletDetails} />
-      <Stack.Screen name='edit-wallet' component={EditWallet} />
       <Stack.Screen name='financial-report' component={FinancialReport} />
-      <Stack.Screen name='new-income' component={NewIncome} />
-      <Stack.Screen name='new-expense' component={NewExpense} />
-      <Stack.Screen name='transaction-details' component={TransactionDetails} />
+      <Stack.Screen name='main' component={AppRoutes} />
     </Stack.Navigator>
   )
 }
@@ -112,6 +102,39 @@ export function AppRoutes () {
       }}
 
     >
+      <Tab.Screen
+        name='onboarding'
+        component={Onboarding}
+        options={{
+          tabBarButton: () => null,
+          tabBarStyle: {
+            display: 'none',
+            opacity: 0
+          }
+        }}
+      />
+      <Tab.Screen
+        name='login'
+        component={Login}
+        options={{
+          tabBarButton: () => null,
+          tabBarStyle: {
+            display: 'none',
+            opacity: 0
+          }
+        }}
+      />
+      <Tab.Screen
+        name='sign-up'
+        component={SignUp}
+        options={{
+          tabBarButton: () => null,
+          tabBarStyle: {
+            display: 'none',
+            opacity: 0
+          }
+        }}
+      />
       <Tab.Screen
         name='home'
         component={Home}
@@ -200,6 +223,90 @@ export function AppRoutes () {
               weight='fill'
             />
           )
+        }}
+      />
+      <Tab.Screen
+        name='wallet'
+        component={Wallet}
+        options={{
+          tabBarButton: () => null,
+          tabBarStyle: {
+            display: 'none',
+            opacity: 0
+          }
+        }}
+      />
+      <Tab.Screen
+        name='new-wallet'
+        component={NewWallet}
+        options={{
+          tabBarButton: () => null,
+          tabBarStyle: {
+            display: 'none',
+            opacity: 0
+          }
+        }}
+      />
+      <Tab.Screen
+        name='wallet-details'
+        component={WalletDetails}
+        options={{
+          tabBarButton: () => null,
+          tabBarStyle: {
+            display: 'none',
+            opacity: 0
+          }
+        }}
+      />
+      <Tab.Screen
+        name='edit-wallet'
+        component={EditWallet}
+        options={{
+          tabBarButton: () => null,
+          tabBarStyle: {
+            display: 'none',
+            opacity: 0
+          }
+        }}
+      />
+      <Tab.Screen
+        name='financial-report'
+        component={FinancialReport}
+        options={{
+          tabBarButton: () => null,
+          tabBarStyle: {
+            display: 'none',
+            opacity: 0
+          }
+        }}
+      />
+       <Tab.Screen
+        name='new-income'
+        component={NewIncome}
+        options={{
+          tabBarButton: () => null,
+          tabBarStyle: {
+            display: 'none',
+            opacity: 0
+          }
+        }}
+      />
+       <Tab.Screen
+        name='new-expense'
+        component={NewExpense}
+        options={{
+          tabBarButton: () => null,
+          tabBarStyle: {
+            display: 'none',
+            opacity: 0
+          }
+        }}
+      />
+      <Tab.Screen
+        name='transaction-details'
+        component={TransactionDetails}
+        options={{
+          tabBarButton: () => null
         }}
       />
     </Tab.Navigator>

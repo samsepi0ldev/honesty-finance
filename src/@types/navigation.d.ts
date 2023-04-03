@@ -2,6 +2,7 @@
 export declare global {
   namespace ReactNavigation {
     interface RootParamList {
+      main: undefined
       home: undefined
       transaction: undefined
       new: undefined
@@ -16,6 +17,21 @@ export declare global {
       'login': undefined
       'sign-up': undefined
       'edit-wallet': undefined
+      'transaction-details': {
+        transaction: {
+          id: string
+          type: string
+          description: string
+          wallet: {
+            name: string
+          }
+          category: {
+            name: string
+          }
+          created_at: Date
+          value: number
+        }
+      }
     }
   }
 }

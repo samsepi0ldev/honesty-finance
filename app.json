@@ -21,7 +21,12 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#7F3DFF"
-      }
+      },
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ],
+      "package": "com.weskerm.honestyfinance"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -45,6 +50,11 @@
           "photosPermission": "The app accesses your photos to let you share them with your friends."
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "2608843a-fcb1-4801-9c15-ddbc993a06f2"
+      }
+    }
   }
 }
