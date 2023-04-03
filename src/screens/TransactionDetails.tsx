@@ -1,4 +1,4 @@
-import { type RouteProp, useFocusEffect, useNavigation } from '@react-navigation/native'
+import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native'
 import clsx from 'clsx'
 import dayjs from 'dayjs'
 import { ArrowLeft, Trash } from 'phosphor-react-native'
@@ -21,16 +21,17 @@ type TransactionType = {
   value: number
 }
 
-type TransactionDetailsProps = {
-  route: RouteProp<Record<string, { transaction: TransactionType }>, string>
+type ParamRouteProps = {
+  transaction: TransactionType
 }
 
-export function TransactionDetails ({ route }: TransactionDetailsProps) {
+export function TransactionDetails () {
   const { width: SCREEN_WIDTH } = useWindowDimensions()
   const ref = useRef<View>(null)
   const bottomSheetRef = useRef<BottomSheetRefProps>(null)
   const { goBack } = useNavigation()
-  const { transaction } = route.params
+  const route = useRoute()
+  const { transaction } = route.params as ParamRouteProps
 
   const openBottomSheet = useCallback(() => {
     bottomSheetRef.current?.scrollTo(-200)

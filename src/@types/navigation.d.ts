@@ -32,6 +32,7 @@ export declare global {
           value: number
         }
       }
+      config: undefined
     }
   }
 }

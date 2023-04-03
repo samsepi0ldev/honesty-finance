@@ -1,6 +1,6 @@
 import { CaretDown, CheckCircle, Paperclip, X } from 'phosphor-react-native'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { Image, View, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, Image as ImageComponent, StatusBar } from 'react-native'
+import { Image, View, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, StatusBar } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import { Camera, CameraType, FlashMode } from 'expo-camera'
 
@@ -76,6 +76,7 @@ export function NewExpense () {
     if (refCamera?.current) {
       const { uri } = await refCamera.current.takePictureAsync()
       setImage(uri)
+      setIsCameraOpened(false)
       ref.current?.scrollTo(0)
     }
   }
@@ -155,7 +156,7 @@ export function NewExpense () {
             ? (
               <View className='relative w-[118px] h-[118px] items-start justify-end mt-4'>
                 {image
-                  ? <ImageComponent
+                  ? <Image
                     source={{ uri: image }}
                     style={{
                       width: 112,
@@ -266,7 +267,6 @@ export function NewExpense () {
           className='w-20 h-20 rounded-full border-2 border-light-20 border-spacing-4 items-center justify-center'>
           <View className='w-16 h-16 bg-light-100 rounded-full' />
         </TouchableOpacity>
-        {image && <Image className='absolute bottom-52 left-10 w-32 h-32 rounded-lg' source={{ uri: image }} />}
       </Camera>}
     </View>
   )

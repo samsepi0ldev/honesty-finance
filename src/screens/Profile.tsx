@@ -44,6 +44,7 @@ export function Profile () {
         </TouchableOpacity>
         <TouchableOpacity
           activeOpacity={0.6}
+          onPress={() => navigate('config')}
           className='px-4 py-3.5 flex-row items-center border-b border-dark-100/10'>
           <View className='w-14 h-14 items-center justify-center bg-violet-20 rounded-2xl mr-2'>
             <GearSix size={32} weight='fill' color='#7F3DFF' />

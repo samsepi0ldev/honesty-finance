@@ -4,7 +4,7 @@ import {
   type BottomTabNavigationEventMap
 } from '@react-navigation/bottom-tabs'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import { View, Text } from 'react-native'
+import { View } from 'react-native'
 import { HouseSimple, Tag, User } from 'phosphor-react-native'
 import { useEffect } from 'react'
 
@@ -24,6 +24,8 @@ import { SignUp } from '../screens/SignUp'
 import { EditWallet } from '../screens/EditWallet'
 import { Onboarding } from '../screens/Onboarding'
 import { TransactionDetails } from '../screens/TransactionDetails'
+import { Config } from '../screens/Config'
+import { Category } from '../screens/Category'
 
 const Tab = createBottomTabNavigator()
 const Stack = createNativeStackNavigator()
@@ -43,14 +45,6 @@ function NewTransaction ({ navigation }: Props) {
   }, [navigation])
   return (
     <View />
-  )
-}
-
-function Category () {
-  return (
-    <View>
-      <Text>Category</Text>
-    </View>
   )
 }
 
@@ -74,6 +68,7 @@ export function StackRoutes () {
       <Stack.Screen name='new-income' component={NewIncome} />
       <Stack.Screen name='new-expense' component={NewExpense} />
       <Stack.Screen name='transaction-details' component={TransactionDetails} />
+      <Stack.Screen name='config' component={Config} />
     </Stack.Navigator>
   )
 }
