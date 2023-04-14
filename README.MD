@@ -2,10 +2,11 @@
 - [x] Adicionar o chart para manipular os gráficos
 - [x] Criar tela de detalhe da translação
 - [x] Criar carrousel para informações na tela inicial
-- [ ] Criar pagina de categorias
-- [ ] Criar a pagina de configuração
+- [x] Criar pagina de categorias
+- [x] Criar a pagina de configuração
 - [ ] Criar a pagina e as funções para exportar dados
 - [ ] Criar ícones para os nomes das carteiras os mais usados
+- [ ] Corrigir o erro nos gráficos ou buscar uma alternativa
 - [x] Criar componente de camera e permissões
 - [x] Todos locais que tem Botão substituir para o criado personalizado
 - [x] Criar componente de sucesso ou error

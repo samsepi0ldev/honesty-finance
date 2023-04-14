@@ -1,14 +1,19 @@
 import clsx from 'clsx'
 import dayjs from 'dayjs'
 import { View, Text, TouchableOpacity } from 'react-native'
-import { Coins, Car, ForkKnife, ScribbleLoop, Sword, Bag } from 'phosphor-react-native'
+import { Sword } from 'phosphor-react-native'
+
 import { useNavigation } from '@react-navigation/native'
+import SalaryIcon from '../assets/Icons/salary.svg'
+import ShoppingIcon from '../assets/Icons/shopping-bag.svg'
+import CarIcon from '../assets/Icons/car.svg'
+import RestaurantIcon from '../assets/Icons/restaurant.svg'
+import RecurringIcon from '../assets/Icons/recurring-bill.svg'
+import LineChartIcon from '../assets/Icons/line-chart-2.svg'
 
 interface Transaction {
   id: string
-  category: {
-    name: string
-  }
+  category: string
   wallet: {
     name: string
   }
@@ -25,7 +30,15 @@ interface BoxIncomeExpanseProps {
 const categories = {
   salary: {
     name: 'Salario',
-    lib: Coins,
+    lib: SalaryIcon,
+    color: {
+      primary: 'bg-green-20',
+      accent: '#00A86B'
+    }
+  },
+  deposit: {
+    name: 'Deposito',
+    lib: SalaryIcon,
     color: {
       primary: 'bg-green-20',
       accent: '#00A86B'
@@ -33,7 +46,7 @@ const categories = {
   },
   transport: {
     name: 'Transporte',
-    lib: Car,
+    lib: CarIcon,
     color: {
       primary: 'bg-blue-20',
       accent: '#0077FF'
@@ -41,7 +54,7 @@ const categories = {
   },
   food: {
     name: 'Comida',
-    lib: ForkKnife,
+    lib: RestaurantIcon,
     color: {
       primary: 'bg-red-20',
       accent: '#FD3C4A'
@@ -49,7 +62,15 @@ const categories = {
   },
   subscription: {
     name: 'Inscrição',
-    lib: ScribbleLoop,
+    lib: RecurringIcon,
+    color: {
+      primary: 'bg-violet-20',
+      accent: '#7F3DFF'
+    }
+  },
+  investments: {
+    name: 'Investimentos',
+    lib: LineChartIcon,
     color: {
       primary: 'bg-violet-20',
       accent: '#7F3DFF'
@@ -57,7 +78,7 @@ const categories = {
   },
   shopping: {
     name: 'Shopping',
-    lib: Bag,
+    lib: ShoppingIcon,
     color: {
       primary: 'bg-yellow-20',
       accent: '#FCAC12'
@@ -70,7 +91,7 @@ export function BoxIncomeExpanse ({ data }: BoxIncomeExpanseProps) {
   const hours = dayjs(data.created_at).format('HH:mm A')
   const { lib: Icon, color } = Object
     .values(categories)
-    .find(category => category.name.includes(data.category.name)) ??
+    .find(category => category.name.toLowerCase().includes(data.category.toLowerCase())) ??
       { lib: Sword, color: { primary: 'bg-light-40', accent: '#0D0E0F' } } as any
   return (
     <TouchableOpacity onPress={() => navigate('transaction-details', { transaction: data })} className='px-4 mb-4 py-3.5 bg-light-80 rounded-3xl items-center justify-between flex-row'>
@@ -79,7 +100,7 @@ export function BoxIncomeExpanse ({ data }: BoxIncomeExpanseProps) {
           <Icon size={32} color={color.accent} weight='fill' />
         </View>
         <View className='ml-4'>
-          <Text className='text-base font-inter-medium text-dark-25'>{data.category.name}</Text>
+          <Text className='text-base font-inter-medium text-dark-25'>{data.category}</Text>
           <Text
             className='text-xs text-light-20 font-inter-medium w-36'
             numberOfLines={1}
@@ -94,7 +115,7 @@ export function BoxIncomeExpanse ({ data }: BoxIncomeExpanseProps) {
           'text-red-100': data.type === 'expense',
           'text-green-100': data.type === 'income'
         })}>
-          {(data.type === 'income' ? '+ ' : '- ') + data.value.toLocaleString('en-US', { style: 'currency', currency: 'USD' }).replace('-', '')}
+          {(data.type === 'income' ? '+ ' : '- ') + (data.value / 100).toLocaleString('en-US', { style: 'currency', currency: 'USD' }).replace('-', '')}
         </Text>
         <Text className='text-xs text-light-20 font-inter-medium'>{hours}</Text>
       </View>

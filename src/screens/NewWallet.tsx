@@ -7,6 +7,7 @@ import { BottomSheet, type BottomSheetRefProps } from '../components/BottomSheet
 import { Button } from '../components/Button'
 
 import { HeaderSimple } from '../components/HeaderSimple'
+import { api } from '../lib/api'
 
 const walletsTypes = [
   {
@@ -40,6 +41,21 @@ const walletsTypes = [
 ]
 export function NewWallet () {
   const [walletType, setWalletType] = useState('')
+  const [incomeValue, setIncomeValue] = useState(0)
+  const [name, setName] = useState('')
+
+  async function handleWalletToCreate () {
+    try {
+      await api.post('wallets/create', {
+        name,
+        account_type: walletType,
+        value: (incomeValue * 100) || undefined
+      })
+    } catch (error) {
+      alert(error)
+    }
+  }
+
   const refBottomSheet = useRef<BottomSheetRefProps>(null)
   const openBottomSheep = useCallback(() => {
     refBottomSheet.current?.scrollTo(-200)
@@ -66,12 +82,14 @@ export function NewWallet () {
             placeholderTextColor='#FCFCFC'
             placeholder='$00.0'
             keyboardType='numeric'
+            onChangeText={text => setIncomeValue(Number(text))}
           />
         </View>
         <View className='bg-light-100 rounded-t-3xl py-6 px-4'>
           <TextInput
             className='w-full h-14 border border-light-60 rounded-2xl pl-4 text-dark-50 text-base font-inter-regular'
             placeholder='Nome'
+            onChangeText={text => setName(text)}
             placeholderTextColor='#91919F'
           />
           <TouchableWithoutFeedback onPress={openBottomSheep}>
@@ -88,7 +106,7 @@ export function NewWallet () {
           </TouchableWithoutFeedback>
           <Button
             className='mt-6'
-            onPress={() => alert('Add new wallet coming soon')}>
+            onPress={handleWalletToCreate}>
             Continuar
           </Button>
         </View>

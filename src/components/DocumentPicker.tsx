@@ -2,8 +2,13 @@ import { TouchableOpacity, Text } from 'react-native'
 import { File } from 'phosphor-react-native'
 import * as DocumentPicker from 'expo-document-picker'
 
+type AttachmentType = {
+  type: 'document'
+  uri: string
+}
+
 interface DocumentPickerProps {
-  documentState: (uri: string) => void
+  documentState: (data: AttachmentType) => void
   fn?: () => void
 }
 
@@ -13,7 +18,10 @@ export function DocumentPickerComponent ({ documentState, fn }: DocumentPickerPr
       type: 'application/pdf'
     })
     if (result.type === 'success') {
-      documentState(result.uri)
+      documentState({
+        type: 'document',
+        uri: result.uri
+      })
       if (fn) fn()
     }
   }

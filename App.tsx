@@ -13,6 +13,7 @@ import { Routes } from './src/routes'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 
 import './src/lib/dayjs'
+import { AuthProvider } from './src/context/auth'
 
 export default function App () {
   async function navigationBar () {
@@ -33,13 +34,15 @@ export default function App () {
 
   if (!fontsLoaded) return null
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <Routes />
-      <StatusBar
-        barStyle='dark-content'
-        backgroundColor='#FFF6E5'
-        translucent
-      />
-    </GestureHandlerRootView>
+    <AuthProvider>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <Routes />
+        <StatusBar
+          barStyle='dark-content'
+          backgroundColor='#FFF6E5'
+          translucent
+        />
+      </GestureHandlerRootView>
+    </AuthProvider>
   )
 }

@@ -29,17 +29,25 @@ export function IconNewTransaction () {
           extrapolateLeft: Extrapolate.CLAMP
         }
       )
+      const opacity = interpolate(
+        progress.value,
+        [0, 0.5, 1],
+        [0, 0, 1]
+      )
       if (x && y) {
         return {
-          transform: [{ translateX: left ? translate : -(translate) }, { translateY: translate }]
+          transform: [{ translateX: left ? translate : -(translate) }, { translateY: translate }],
+          opacity
         }
       } else if (x) {
         return {
-          transform: [{ translateX: translate }]
+          transform: [{ translateX: translate }],
+          opacity
         }
       } else {
         return {
-          transform: [{ translateY: translate }]
+          transform: [{ translateY: translate }],
+          opacity
         }
       }
     })

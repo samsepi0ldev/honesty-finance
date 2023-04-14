@@ -1,10 +1,13 @@
-import { useFocusEffect, useNavigation } from '@react-navigation/native'
-import { ArrowLeft, CaretDown, CheckCircle, Trash } from 'phosphor-react-native'
+import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native'
+import { ArrowLeft, CaretDown, CheckCircle } from 'phosphor-react-native'
 import { useCallback, useRef, useState } from 'react'
 import { TouchableOpacity, View, Text, TextInput, TouchableWithoutFeedback, StatusBar } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
+
 import { BottomSheet, type BottomSheetRefProps } from '../components/BottomSheet'
 import { Button } from '../components/Button'
+import Trash from '../assets/Icons/trash.svg'
+import { api } from '../lib/api'
 
 const walletsTypes = [
   {
@@ -37,13 +40,40 @@ const walletsTypes = [
   }
 ]
 
+type RouteParams = {
+  id: string
+  name: string
+}
+
 export function EditWallet () {
-  const { goBack } = useNavigation()
+  const route = useRoute()
+  const { id, name: nameValue } = route.params as RouteParams
+  const { navigate, goBack } = useNavigation()
+
   const [walletType, setWalletType] = useState('')
+  const [name, setName] = useState(nameValue)
+
   const refBottomSheet = useRef<BottomSheetRefProps>(null)
+  const refDeleteWalletBottomSheet = useRef<BottomSheetRefProps>(null)
+
   const openBottomSheep = useCallback(() => {
     refBottomSheet.current?.scrollTo(-200)
   }, [])
+  const openDeleteWalletBottomSheet = useCallback(() => {
+    refDeleteWalletBottomSheet.current?.scrollTo(-200)
+  }, [])
+
+  async function deleteWallet () {
+    await api.delete(`wallets/${id}/delete`)
+    navigate('wallet')
+  }
+
+  async function updateWallet () {
+    await api.patch(`wallets/${id}/edit`, {
+      name,
+      account_type: walletType
+    })
+  }
 
   useFocusEffect(() => {
     StatusBar.setBackgroundColor('#7F3DFF')
@@ -62,10 +92,10 @@ export function EditWallet () {
         <Text className='text-lg font-inter-semibold text-light-100'>Detalhes da carteira</Text>
         <TouchableOpacity
           activeOpacity={0.6}
-          onPress={() => { }}
+          onPress={openDeleteWalletBottomSheet}
           className='w-12 h-12 items-center justify-center'
         >
-          <Trash color='#fff' weight='fill' size={32} />
+          <Trash color='#fff' width={32} height={32} />
         </TouchableOpacity>
       </View>
       <ScrollView
@@ -77,6 +107,8 @@ export function EditWallet () {
           <TextInput
             className='mt-4 w-full h-14 border border-light-60 rounded-2xl pl-4 text-dark-50 text-base font-inter-regular'
             placeholder='Nome'
+            value={name}
+            onChangeText={text => setName(text)}
             placeholderTextColor='#91919F'
           />
           <TouchableWithoutFeedback onPress={openBottomSheep}>
@@ -93,7 +125,7 @@ export function EditWallet () {
           </TouchableWithoutFeedback>
           <Button
             className='mt-6'
-            onPress={() => alert('Edit wallet coming soon')}>
+            onPress={updateWallet}>
             Continuar
           </Button>
         </View>
@@ -114,6 +146,26 @@ export function EditWallet () {
             </TouchableOpacity>
           ))}
         </ScrollView>
+      </BottomSheet>
+      <BottomSheet ref={refDeleteWalletBottomSheet}>
+        <View>
+          <Text className='text-center text-base font-inter-semibold text-dark-100 mt-4'>Remover esta carteira?</Text>
+          <Text className='text-sm text-light-20 font-inter-medium text-center'>Você tem certeza de que quer remover esta carteira?</Text>
+          <View className='flex-row w-full items-center justify-center my-4'>
+            <Button
+              className='flex-1 h-12'
+              type='secondary'>
+              Não
+            </Button>
+            <Button
+              className='flex-1 ml-4 h-12'
+              type='primary'
+              onPress={deleteWallet}
+              >
+              Sim
+            </Button>
+          </View>
+        </View>
       </BottomSheet>
     </View>
   )

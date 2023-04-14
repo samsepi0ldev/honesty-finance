@@ -2,8 +2,14 @@ import { TouchableOpacity, Text } from 'react-native'
 import { Image } from 'phosphor-react-native'
 import * as ImagePicker from 'expo-image-picker'
 
+type AttachmentType = {
+  type: 'image'
+  uri: string
+  base64?: string | null
+}
+
 interface ImagePikerProps {
-  imageState: (uri: string) => void
+  imageState: (uri: AttachmentType) => void
   fn?: () => void
 }
 
@@ -13,10 +19,15 @@ export function ImagePickerComponent ({ imageState, fn }: ImagePikerProps) {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [4, 5],
-      quality: 1
+      quality: 1,
+      base64: true
     })
     if (!result.canceled) {
-      imageState(result.assets[0].uri)
+      imageState({
+        type: 'image',
+        uri: result.assets[0].uri,
+        base64: result.assets[0].base64
+      })
       if (fn) fn()
     }
   }

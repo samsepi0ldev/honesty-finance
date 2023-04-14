@@ -1,86 +1,14 @@
-import { useFocusEffect, useNavigation } from '@react-navigation/native'
+import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native'
 import dayjs from 'dayjs'
 import { ArrowLeft, PencilSimple } from 'phosphor-react-native'
-import { useMemo } from 'react'
-import { View, Text, FlatList, TouchableOpacity, StatusBar } from 'react-native'
+import { useEffect, useMemo, useState } from 'react'
+import { View, Text, FlatList, TouchableOpacity, StatusBar, TouchableWithoutFeedback } from 'react-native'
 import { BoxIncomeExpanse } from '../components/BoxIncomeExpanse'
 
 import { Heading } from '../components/Heading'
-
-const transactions = [
-  {
-    id: generateUUID(),
-    category: { name: 'Shopping' },
-    wallet: { name: 'PicPay' },
-    description: 'Comprei alguma coisa na mercearia',
-    value: 32.50,
-    type: 'expense',
-    created_at: new Date('2023-02-07T04:31:42.376Z')
-  },
-  {
-    id: generateUUID(),
-    category: { name: 'Inscrição' },
-    wallet: { name: 'PicPay' },
-    description: 'Disney + plano anual',
-    value: 55.90,
-    type: 'expense',
-    created_at: new Date('2023-02-07T12:47:31.571Z')
-  },
-  {
-    id: generateUUID(),
-    category: { name: 'Comida' },
-    wallet: { name: 'PicPay' },
-    description: 'Comprei um pastel',
-    value: 8.50,
-    type: 'expense',
-    created_at: new Date('2023-02-07T20:03:52.811Z')
-  },
-  {
-    id: generateUUID(),
-    category: { name: 'Salario' },
-    wallet: { name: 'PicPay' },
-    description: 'Salario da assistência',
-    value: 500,
-    type: 'income',
-    created_at: new Date('2023-02-07T03:14:17.955Z')
-  },
-  {
-    id: generateUUID(),
-    category: { name: 'Transporte' },
-    wallet: { name: 'PicPay' },
-    description: 'Uber para casa',
-    value: 18,
-    type: 'expense',
-    created_at: new Date('2023-02-07T21:58:08.247Z')
-  },
-  {
-    id: generateUUID(),
-    category: { name: 'Investimentos' },
-    wallet: { name: 'PicPay' },
-    description: 'Picpay investimentos',
-    value: 44.89,
-    type: 'income',
-    created_at: new Date('2023-02-07T16:58:25.247Z')
-  }
-]
-
-function generateUUID () { // Public Domain/MIT
-  let d = new Date().getTime()// Timestamp
-  let d2 = ((typeof performance !== 'undefined') && performance.now && (performance.now() * 1000)) || 0// Time in microseconds since page-load or 0 if unsupported
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-    let r = Math.random() * 16// random number between 0 and 16
-    if (d > 0) { // Use timestamp until depleted
-      r = (d + r) % 16 | 0
-      d = Math.floor(d / 16)
-    } else { // Use microseconds since page-load if supported
-      r = (d2 + r) % 16 | 0
-      d2 = Math.floor(d2 / 16)
-    }
-    return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16)
-  })
-}
-
-type TransactionType = typeof transactions[0]
+import { type Transaction } from '../contracts/transaction'
+import { api } from '../lib/api'
+import { Loading } from '../components/Loading'
 
 type Item = {
   key: string
@@ -88,10 +16,28 @@ type Item = {
   isTitle?: boolean
 }
 
-type DaysAgoType = Record<number, TransactionType[]>
+type DaysAgoType = Record<number, Transaction[]>
+type RouteParams = {
+  id: string
+  name: string
+}
 
 export function WalletDetails () {
+  const [transactions, setTransactions] = useState<Transaction[]>([])
+  const [isApiBusy, setIsApiBusy] = useState(false)
+  const [walletBalance, setWalletBalance] = useState(0)
   const { goBack, navigate } = useNavigation()
+  const route = useRoute()
+  const { id, name } = route.params as RouteParams
+
+  async function getTransactions () {
+    setIsApiBusy(true)
+    const response = await api.get(`wallet/${id}/transactions`)
+    setTransactions(response.data.transactions)
+    setWalletBalance(response.data.wallet_balance)
+    setIsApiBusy(false)
+  }
+
   const { data, indices } = useMemo(() => {
     const today = transactions
       .filter(transaction =>
@@ -177,6 +123,9 @@ export function WalletDetails () {
     StatusBar.setBackgroundColor('#fff')
     StatusBar.setBarStyle('dark-content')
   })
+  useEffect(() => {
+    getTransactions()
+  }, [])
   return (
     <View className='flex-1 bg-light-100'>
       <View className='flex-row items-center justify-between h-16 p-4'>
@@ -190,7 +139,7 @@ export function WalletDetails () {
         <Text className='text-lg font-inter-semibold text-dark-50'>Detalhes da carteira</Text>
         <TouchableOpacity
           activeOpacity={0.6}
-          onPress={() => navigate('edit-wallet')}
+          onPress={() => navigate('edit-wallet', { id, name })}
           className='w-12 h-12 items-center justify-center'
         >
           <PencilSimple color='#212325' size={32} />
@@ -198,18 +147,44 @@ export function WalletDetails () {
       </View>
       <View className='items-center justify-center gap-2 mt-8'>
         <View className='bg-light-60 w-12 h-12 rounded-2xl' />
-        <Text className='text-2xl font-inter-semibold text-dark-75'>Paypal</Text>
-        <Text className='text-3xl font-inter-bold text-dark-50'>$2400</Text>
+        <Text className='text-2xl font-inter-semibold text-dark-75'>{name}</Text>
+        <Text className='text-3xl font-inter-bold text-dark-50'>
+          {(walletBalance / 100).toLocaleString('en-US', {
+            style: 'currency',
+            currency: 'USD'
+          })}
+        </Text>
       </View>
-      <FlatList
+      {!isApiBusy
+        ? <FlatList
+        contentContainerStyle={{
+          paddingHorizontal: 16
+        }}
         className='mt-12'
-        data={data}
-        keyExtractor={item => item.key}
-        renderItem={({ item }) => item.render()}
-        stickyHeaderIndices={indices}
-        onRefresh={() => {}}
-        refreshing={false}
+        data={transactions}
+        keyExtractor={item => item.id}
+        renderItem={({ item }) => <BoxIncomeExpanse data={item} />}
+        ListEmptyComponent={
+          <View className='items-center justify-center'>
+            <Text className='text-base font-inter-medium text-light-20 text-center'>Você ainda não tem uma transação, Que tal adicionar uma agora?{'\n'}Escolha uma das opções abaixo</Text>
+            <View className='flex-row'>
+            <TouchableWithoutFeedback onPress={() => navigate('new-income')}>
+              <Text className='text-base font-inter-medium text-violet-100'>criar uma renda,</Text>
+            </TouchableWithoutFeedback>
+            <TouchableWithoutFeedback onPress={() => navigate('new-expense')}>
+              <Text className='text-base font-inter-medium text-violet-100'>{'\b'}ou uma despesa</Text>
+            </TouchableWithoutFeedback>
+            </View>
+          </View>
+        }
+        // stickyHeaderIndices={indices}
+        // onRefresh={() => {}}
+        // refreshing={false}
       />
+        : <View className='flex-1 items-center justify-center'>
+            <Loading size={48} color='#7F3DFF' />
+          </View>
+        }
     </View>
   )
 }

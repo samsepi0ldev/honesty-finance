@@ -1,19 +1,14 @@
 import {
-  type BottomTabNavigationProp,
-  createBottomTabNavigator,
-  type BottomTabNavigationEventMap
+  createBottomTabNavigator
 } from '@react-navigation/bottom-tabs'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { View } from 'react-native'
-import { HouseSimple, Tag, User } from 'phosphor-react-native'
-import { useEffect } from 'react'
 
 import { Home } from '../screens/Home'
 import { Profile } from '../screens/Profile'
 import { Wallet } from '../screens/Wallet'
 import { NewWallet } from '../screens/NewWallet'
 import { IconNewTransaction } from '../components/IconNewTransaction'
-import TransactionIcon from '../assets/Transaction.svg'
 import { WalletDetails } from '../screens/WalletDetails'
 import { Transactions } from '../screens/Transactions'
 import { FinancialReport } from '../screens/FinancialReport'
@@ -27,39 +22,39 @@ import { TransactionDetails } from '../screens/TransactionDetails'
 import { Config } from '../screens/Config'
 import { Category } from '../screens/Category'
 
+import HomeIcon from '../assets/Icons/home.svg'
+import PieChartIcon from '../assets/Icons/pie-chart.svg'
+import UserIcon from '../assets/Icons/user.svg'
+import TransactionIcon from '../assets/Icons/transaction.svg'
+import { useAuth } from '../context/auth'
+
 const Tab = createBottomTabNavigator()
 const Stack = createNativeStackNavigator()
 
-type HomeScreenNavigationProp = BottomTabNavigationProp<BottomTabNavigationEventMap>
-
-interface Props {
-  navigation: HomeScreenNavigationProp
-}
-
-function NewTransaction ({ navigation }: Props) {
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('tabPress', e => {
-      e.preventDefault()
-    })
-    return unsubscribe
-  }, [navigation])
+function NewTransaction () {
   return (
     <View />
   )
 }
 
 export function StackRoutes () {
+  const { isLogged } = useAuth()
   return (
     <Stack.Navigator
-      initialRouteName='main'
+      initialRouteName='onboarding'
       screenOptions={{
         headerShown: false
       }}
     >
-      <Stack.Screen name='onboarding' component={Onboarding} />
-      <Stack.Screen name='login' component={Login} />
-      <Stack.Screen name='sign-up' component={SignUp} />
-      <Stack.Screen name='main' component={AppRoutes} />
+      {!isLogged && (
+        <>
+          <Stack.Screen name='onboarding' component={Onboarding} />
+          <Stack.Screen name='login' component={Login} />
+          <Stack.Screen name='sign-up' component={SignUp} />
+        </>
+      )}
+
+      <Stack.Screen name='main' component={TabRoutes} />
       <Stack.Screen name='wallet' component={Wallet} />
       <Stack.Screen name='new-wallet' component={NewWallet} />
       <Stack.Screen name='wallet-details' component={WalletDetails} />
@@ -73,7 +68,7 @@ export function StackRoutes () {
   )
 }
 
-export function AppRoutes () {
+export function TabRoutes () {
   return (
     <Tab.Navigator
       initialRouteName='home'
@@ -118,10 +113,10 @@ export function AppRoutes () {
           },
           title: 'Inicio',
           tabBarIcon: ({ color, focused, size }) => (
-            <HouseSimple
-              size={size}
-              color={color}
-              weight='fill'
+            <HomeIcon
+              width={size}
+              height={size}
+              fill={color}
             />
           )
         }}
@@ -158,6 +153,9 @@ export function AppRoutes () {
           title: '',
           tabBarIcon: () => <IconNewTransaction />
         }}
+        listeners={{
+          tabPress: e => e.preventDefault()
+        }}
       />
       <Tab.Screen
         name='category'
@@ -170,10 +168,10 @@ export function AppRoutes () {
           },
           title: 'Categorias',
           tabBarIcon: ({ color, focused, size }) => (
-            <Tag
-              size={size}
-              color={color}
-              weight='fill'
+            <PieChartIcon
+              width={size}
+              height={size}
+              fill={color}
             />
           )
         }}
@@ -189,10 +187,10 @@ export function AppRoutes () {
           },
           title: 'Perfil',
           tabBarIcon: ({ color, focused, size }) => (
-            <User
-              size={size}
-              color={color}
-              weight='fill'
+            <UserIcon
+              width={size}
+              height={size}
+              fill={color}
             />
           )
         }}

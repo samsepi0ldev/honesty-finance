@@ -10,7 +10,6 @@ export function CameraComponent ({ startCam }: CameraComponentProps) {
   const [permission, requestPermission] = Camera.useCameraPermissions()
   const requestPermissionCamera = async () => {
     void requestPermission()
-    if (!permission?.granted) alert('Voce precisa permitir acesso a camera')
     startCam(permission?.granted)
   }
   return (

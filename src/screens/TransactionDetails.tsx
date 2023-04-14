@@ -4,8 +4,11 @@ import dayjs from 'dayjs'
 import { ArrowLeft, Trash } from 'phosphor-react-native'
 import { useCallback, useRef } from 'react'
 import { TouchableOpacity, View, Text, useWindowDimensions, Image, StatusBar } from 'react-native'
+
 import { BottomSheet, type BottomSheetRefProps } from '../components/BottomSheet'
 import { Button } from '../components/Button'
+import { api } from '../lib/api'
+import TrashIcon from '../assets/Icons/trash.svg'
 
 type TransactionType = {
   id: string
@@ -14,9 +17,7 @@ type TransactionType = {
   wallet: {
     name: string
   }
-  category: {
-    name: string
-  }
+  category: string
   created_at: Date
   value: number
 }
@@ -36,6 +37,11 @@ export function TransactionDetails () {
   const openBottomSheet = useCallback(() => {
     bottomSheetRef.current?.scrollTo(-200)
   }, [])
+
+  async function deleteTransaction () {
+    await api.delete(`transaction/${transaction.id}`)
+    goBack()
+  }
 
   useFocusEffect(() => {
     StatusBar.setBackgroundColor(transaction.type === 'income' ? '#00A86B' : '#FD3C4A')
@@ -61,12 +67,12 @@ export function TransactionDetails () {
             onPress={openBottomSheet}
             className='w-12 h-12 items-center justify-center'
           >
-            <Trash color='#fff' weight='fill' size={32} />
+            <TrashIcon width={32} height={32} color='#fff' />
           </TouchableOpacity>
         </View>
         <View className='items-center justify-center'>
           <Text className='font-inter-bold text-5xl text-light-80 leading-[80px]'>
-            {transaction.value.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
+            {(transaction.value / 100).toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
           </Text>
           <Text className='font-inter-medium text-xs text-light-80 mt-2'>
             {dayjs(transaction.created_at).format('dddd, DD [de] MMMM [de] YYYY HH:mm')}
@@ -82,7 +88,7 @@ export function TransactionDetails () {
           </View>
           <View className='items-center justify-center'>
             <Text className='text-sm font-inter-medium text-light-20'>Categoria</Text>
-            <Text className='text-dark-100 text-base font-inter-semibold mt-1'>{transaction.category.name}</Text>
+            <Text className='text-dark-100 text-base font-inter-semibold mt-1'>{transaction.category}</Text>
           </View>
           <View className='items-center justify-center'>
             <Text className='text-sm font-inter-medium text-light-20'>Carteira</Text>
@@ -116,7 +122,9 @@ export function TransactionDetails () {
             </Button>
             <Button
               className='flex-1 ml-4 h-12'
-              type='primary'>
+              type='primary'
+              onPress={deleteTransaction}
+              >
               Sim
             </Button>
           </View>

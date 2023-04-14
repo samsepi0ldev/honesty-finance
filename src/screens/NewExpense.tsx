@@ -1,91 +1,109 @@
 import { CaretDown, CheckCircle, Paperclip, X } from 'phosphor-react-native'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { Image, View, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, StatusBar } from 'react-native'
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  Image as ImageComponent,
+  StatusBar
+} from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import { Camera, CameraType, FlashMode } from 'expo-camera'
 
 import { BottomSheet, type BottomSheetRefProps } from '../components/BottomSheet'
 import { HeaderSimple } from '../components/HeaderSimple'
 import { ImagePickerComponent } from '../components/ImagePicker'
-import PdfIcon from '../assets/pdf.svg'
 import { DocumentPickerComponent } from '../components/DocumentPicker'
+import PdfIcon from '../assets/pdf.svg'
 import { Button } from '../components/Button'
-import { CameraComponent } from '../components/Camera'
 import { AlertMessage } from '../components/AlertMessage'
+import { CameraComponent } from '../components/Camera'
+import { api } from '../lib/api'
+import { type Wallet } from '../contracts/wallet'
 
 const categories = [
   {
     label: 'Shopping',
-    value: 'shopping'
+    value: 'shopping',
+    color: 'bg-yellow-100'
   },
   {
     label: 'Inscrição',
-    value: 'subscription'
+    value: 'subscription',
+    color: 'bg-violet-100'
   },
   {
     label: 'Comida',
-    value: 'food'
+    value: 'food',
+    color: 'bg-red-100'
   },
   {
     label: 'Salario',
-    value: 'wage'
+    value: 'wage',
+    color: 'bg-green-100'
   },
   {
     label: 'Transporte',
-    value: 'transport'
+    value: 'transport',
+    color: 'bg-blue-100'
   },
   {
     label: 'Investimentos',
-    value: 'investments'
+    value: 'investments',
+    color: 'bg-violet-100'
   }
 ]
 
-const wallets = [
-  {
-    label: 'PicPay',
-    value: 'bank'
-  },
-  {
-    label: 'Caixa 1',
-    value: 'checkout'
-  },
-  {
-    label: 'Caixa 2',
-    value: 'checkout'
-  },
-  {
-    label: 'PayPal',
-    value: 'bank'
-  }
-]
+type AttachmentType = {
+  type: string
+  uri: string
+}
 
 export function NewExpense () {
-  const [image, setImage] = useState<string | null>(null)
-  const [document, setDocument] = useState<string | null>(null)
+  const [attachment, setAttachment] = useState<AttachmentType | null>(null)
   const [category, setCategory] = useState('')
   const [wallet, setWallet] = useState('')
+  const [value, setValue] = useState(0)
+  const [description, setDescription] = useState('')
+  const [wallets, setWallets] = useState<Wallet[]>([])
   const [ok, setOk] = useState(false)
   const [isCameraOpened, setIsCameraOpened] = useState(false)
-
-  const ref = useRef<BottomSheetRefProps>(null)
-  const refBottomSheepCategory = useRef<BottomSheetRefProps>(null)
-  const refBottomSheepWallet = useRef<BottomSheetRefProps>(null)
-  const refCamera = useRef<Camera>(null)
-
-  async function takePicture () {
-    if (refCamera?.current) {
-      const { uri } = await refCamera.current.takePictureAsync()
-      setImage(uri)
-      setIsCameraOpened(false)
-      ref.current?.scrollTo(0)
-    }
-  }
 
   const startCamera = useCallback((permission: boolean | undefined) => {
     if (permission) {
       setIsCameraOpened(permission)
     }
   }, [])
+
+  async function takePicture () {
+    if (refCamera?.current) {
+      const { uri } = await refCamera.current.takePictureAsync()
+      setAttachment({
+        type: 'image',
+        uri
+      })
+      setIsCameraOpened(false)
+      ref.current?.scrollTo(0)
+    }
+  }
+
+  async function createTransaction () {
+    await api.post('transactions', {
+      category,
+      description,
+      value,
+      type: 'expense',
+      wallet_id: wallet
+    })
+    setOk(true)
+  }
+
+  const ref = useRef<BottomSheetRefProps>(null)
+  const refBottomSheepCategory = useRef<BottomSheetRefProps>(null)
+  const refBottomSheepWallet = useRef<BottomSheetRefProps>(null)
+  const refCamera = useRef<Camera>(null)
 
   const openBottomSheep = useCallback(() => {
     ref.current?.scrollTo(-200)
@@ -100,6 +118,8 @@ export function NewExpense () {
     StatusBar.setBackgroundColor('#FD3C4A')
     StatusBar.setBarStyle('light-content')
     setIsCameraOpened(false)
+    api.get('wallets/list')
+      .then(res => setWallets(res.data.wallets))
   }, [])
   return (
     <View className='flex-1 bg-red-100'>
@@ -119,6 +139,7 @@ export function NewExpense () {
             placeholderTextColor='#FCFCFC'
             placeholder='$00.0'
             keyboardType='numeric'
+            onChangeText={text => setValue(Number(text) * 100)}
           />
         </View>
         <View className='bg-light-100 rounded-t-3xl py-6 px-4'>
@@ -127,7 +148,7 @@ export function NewExpense () {
               {category
                 ? (
                   <View className='bg-light-80 border border-light-60 p-2 pr-4 rounded-full flex-row items-center'>
-                    <View className='w-3.5 h-3.5 rounded-full bg-green-100 mr-2' />
+                    <View className={`w-3.5 h-3.5 rounded-full mr-2 ${categories.find(cat => cat.label === category)?.color as string}`} />
                     <Text className='font-inter-medium text-sm text-dark-50 leading-[14px]'>{category}</Text>
                   </View>
                   )
@@ -139,25 +160,26 @@ export function NewExpense () {
             className='mt-4 w-full h-14 border border-light-60 rounded-2xl pl-4 text-dark-50 text-base font-inter-regular'
             placeholder='Descrição'
             placeholderTextColor='#91919F'
+            onChangeText={text => setDescription(text)}
           />
           <TouchableWithoutFeedback onPress={openWalletBottomSheep}>
             <View className='mt-4 w-full h-14 border border-light-60 rounded-2xl px-4 flex-row items-center justify-between'>
               {wallet
                 ? (
                   <View className='rounded-full flex-row items-center'>
-                    <Text className='font-inter-medium text-sm text-dark-50'>{wallet}</Text>
+                    <Text className='font-inter-medium text-sm text-dark-50'>{wallets.find(w => w.id === wallet)?.name}</Text>
                   </View>
                   )
                 : <Text className='text-light-20 font-inter-regular text-base'>Carteira</Text>}
               <CaretDown size={24} color='#91919F' />
             </View>
           </TouchableWithoutFeedback>
-          {image ?? document
+          {attachment
             ? (
               <View className='relative w-[118px] h-[118px] items-start justify-end mt-4'>
-                {image
-                  ? <Image
-                    source={{ uri: image }}
+                {attachment.type === 'image'
+                  ? <ImageComponent
+                    source={{ uri: attachment.uri }}
                     style={{
                       width: 112,
                       height: 112,
@@ -167,8 +189,7 @@ export function NewExpense () {
                 }
                 <TouchableOpacity
                   onPress={() => {
-                    setImage(null)
-                    setDocument(null)
+                    setAttachment(null)
                   }}
                   className='absolute top-0 right-0 w- bg-dark-100/30 h-6 w-6 items-center justify-center rounded-full'>
                   <X size={12} weight='bold' color='#ffffff' />
@@ -193,7 +214,7 @@ export function NewExpense () {
           }
           <Button
             className='mt-6'
-            onPress={() => alert('Expense statement coming soon')}>
+            onPress={createTransaction}>
             Continuar
           </Button>
         </View>
@@ -202,11 +223,11 @@ export function NewExpense () {
         <View className='mt-7 flex-row'>
           <CameraComponent startCam={startCamera} />
           <ImagePickerComponent
-            imageState={setImage}
+            imageState={setAttachment}
             fn={() => ref.current?.scrollTo(0)}
           />
           <DocumentPickerComponent
-            documentState={setDocument}
+            documentState={setAttachment}
             fn={() => ref.current?.scrollTo(0)}
           />
         </View>
@@ -220,10 +241,10 @@ export function NewExpense () {
         >
           {categories.map(({ label, value }, i) => (
             <TouchableOpacity
-              key={i} onPress={() => setCategory(value)}
+              key={i} onPress={() => setCategory(label)}
               className='h-14 flex-row items-center justify-between'>
               <Text className='text-dark-100 text-sm font-inter-medium'>{label}</Text>
-              {value === category && <CheckCircle weight='fill' size={24} color='#5233FF' />}
+              {label === category && <CheckCircle weight='fill' size={24} color='#5233FF' />}
             </TouchableOpacity>
           ))}
         </ScrollView>
@@ -233,13 +254,14 @@ export function NewExpense () {
           contentContainerStyle={{
             paddingBottom: 32
           }}
-          showsVerticalScrollIndicator={false}>
-          {wallets.map(({ label, value }, i) => (
+          showsVerticalScrollIndicator={false}
+        >
+          {wallets.map(({ name, id }, i) => (
             <TouchableOpacity
-              key={i} onPress={() => setWallet(label)}
+              key={i} onPress={() => setWallet(id)}
               className='h-14 flex-row items-center justify-between'>
-              <Text className='text-dark-100 text-sm font-inter-medium'>{label}</Text>
-              {label === wallet && <CheckCircle weight='fill' size={24} color='#5233FF' />}
+              <Text className='text-dark-100 text-sm font-inter-medium'>{name}</Text>
+              {id === wallet && <CheckCircle weight='fill' size={24} color='#5233FF' />}
             </TouchableOpacity>
           ))}
         </ScrollView>
@@ -249,25 +271,27 @@ export function NewExpense () {
         message='A transação foi criada com sucesso'
         onPress={() => setOk(false)}
       />}
-      {isCameraOpened && <Camera
-        autoFocus={true}
-        ref={refCamera}
-        type={CameraType.back}
-        flashMode={FlashMode.auto}
-        ratio='16:9'
-        className='flex-1 absolute inset-0 items-center justify-end pb-10'
-      >
-        <TouchableOpacity
-          onPress={() => setIsCameraOpened(false)}
-          className='absolute top-4 right-4 items-center justify-center' >
-          <X size={32} color='#fff' />
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={takePicture}
-          className='w-20 h-20 rounded-full border-2 border-light-20 border-spacing-4 items-center justify-center'>
-          <View className='w-16 h-16 bg-light-100 rounded-full' />
-        </TouchableOpacity>
-      </Camera>}
+      {isCameraOpened &&
+        <Camera
+          autoFocus={true}
+          ref={refCamera}
+          type={CameraType.back}
+          flashMode={FlashMode.auto}
+          ratio='16:9'
+          className='flex-1 absolute inset-0 items-center justify-end pb-10'
+        >
+          <TouchableOpacity
+            onPress={() => setIsCameraOpened(false)}
+            className='absolute top-4 right-4 items-center justify-center' >
+            <X size={32} color='#fff' />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={takePicture}
+            className='w-20 h-20 rounded-full border-2 border-light-20 border-spacing-4 items-center justify-center'>
+            <View className='w-16 h-16 bg-light-100 rounded-full' />
+          </TouchableOpacity>
+        </Camera>
+      }
     </View>
   )
 }

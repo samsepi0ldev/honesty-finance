@@ -1,61 +1,14 @@
-import { CaretDown } from 'phosphor-react-native'
-import { View, Text, FlatList, TouchableOpacity, StatusBar } from 'react-native'
+import { View, Text, FlatList, StatusBar } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { BoxTransaction } from '../components/BoxTransaction'
 import { BoxIncomeExpanse } from '../components/BoxIncomeExpanse'
 import { Heading } from '../components/Heading'
-import { Chart } from '../components/Chart'
 import { useFocusEffect } from '@react-navigation/native'
-
-const transactions = [
-  {
-    id: '1',
-    category: { name: 'Shopping' },
-    wallet: { name: 'PicPay' },
-    description: 'Comprei alguma coisa na mercearia',
-    value: 32.50,
-    type: 'expense',
-    created_at: new Date('2023-02-07T04:31:42.376Z')
-  },
-  {
-    id: '2',
-    category: { name: 'Inscrição' },
-    wallet: { name: 'PicPay' },
-    description: 'Disney + plano anual',
-    value: 55.90,
-    type: 'expense',
-    created_at: new Date('2023-02-07T12:47:31.571Z')
-  },
-  {
-    id: '3',
-    category: { name: 'Salario' },
-    wallet: { name: 'PicPay' },
-    description: 'Salario da assistência',
-    value: 500,
-    type: 'income',
-    created_at: new Date('2023-02-07T03:14:17.955Z')
-  },
-  {
-    id: '4',
-    category: { name: 'Investimento' },
-    wallet: { name: 'PicPay' },
-    description: 'Investimento no PicPay',
-    value: 1.75,
-    type: 'income',
-    created_at: new Date('2023-02-07T03:14:17.955Z')
-  },
-  {
-    id: '5',
-    category: { name: 'Serviço' },
-    wallet: { name: 'PicPay' },
-    description: 'Desbloqueio de celular',
-    value: 15,
-    type: 'income',
-    created_at: new Date('2023-02-07T03:14:17.955Z')
-  }
-]
+import { api } from '../lib/api'
+import { type Transaction } from '../contracts/transaction'
+import { SelectMonth } from '../components/SelectMonth'
 
 type OptimizationProps = {
   key: string
@@ -63,21 +16,36 @@ type OptimizationProps = {
   isTitle?: boolean
 }
 
+type BillingAccount = {
+  account_balance: number
+  income: number
+  expense: number
+}
+
 export function Home () {
-  const dataForGraph = transactions.map(transaction => ({
-    x: transaction.category.name,
-    y: transaction.value
-  }))
+  const [billingAccount, setBillingAccount] = useState<BillingAccount>({
+    account_balance: 0,
+    expense: 0,
+    income: 0
+  })
+  const [transactions, setTransactions] = useState<Transaction[]>([])
+  // const dataForGraph = useMemo(() => {
+  //   const data = transactions.map(transaction => ({
+  //     x: transaction.category,
+  //     y: transaction.value
+  //   }))
+  //   return data
+  // }, [transactions])
   const { data, indices } = useMemo(() => {
     const data: OptimizationProps[] = [
       {
         key: 'HEADING_SPEND_FREQUENCY',
         render: () => <Heading title='Frequência de gastos' />
       },
-      {
-        key: 'CHARTS',
-        render: () => <Chart data={dataForGraph} withFilter />
-      },
+      // {
+      //   key: 'CHARTS',
+      //   render: () => <Chart data={dataForGraph} withFilter />
+      // },
       {
         key: 'HEADING_RECENT_TRANSLATIONS',
         render: () => <Heading title='Transações recentes' />,
@@ -92,11 +60,22 @@ export function Home () {
     ]
     const indices = data.filter(item => !item.isTitle).map((_, i) => i)
     return { data, indices }
-  }, [])
+  }, [transactions])
+  async function handleAccountBilling () {
+    const [billing, transaction] = await Promise.all([
+      api.get('transactions/billing-details'),
+      api.get('transactions')
+    ])
+    setBillingAccount(billing.data)
+    setTransactions(transaction.data.transactions)
+  }
   useFocusEffect(() => {
     StatusBar.setBackgroundColor('#FFF6E5')
     StatusBar.setBarStyle('dark-content')
   })
+  useEffect(() => {
+    handleAccountBilling()
+  }, [])
   return (
     <View className='bg-light-100 flex-1'>
       <LinearGradient
@@ -109,22 +88,18 @@ export function Home () {
         }}
       >
         <View className='justify-center items-center h-16'>
-          <TouchableOpacity
-            className='flex-row items-center border border-light-60 h-10 px-4 rounded-full'>
-            <CaretDown size={24} color='#7F3DFF' />
-            <Text className='text-sm font-inter-medium text-dark-50'>outubro</Text>
-          </TouchableOpacity>
+          <SelectMonth />
         </View>
         <Text className='text-sm font-inter-medium text-light-20 text-center'>
           Saldo da conta
         </Text>
         <Text className='text-dark-75 font-inter-semibold text-4xl text-center mt-2'>
-          $9,400.00
+          {(billingAccount.account_balance / 100).toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
         </Text>
         <View className='mt-7 flex-row'>
-          <BoxTransaction type='income' value={5000} />
+          <BoxTransaction type='income' value={billingAccount.income / 100} />
           <View className='w-2' />
-          <BoxTransaction type='expense' value={1200} />
+          <BoxTransaction type='expense' value={billingAccount.expense / 100} />
         </View>
       </LinearGradient>
       <FlatList<OptimizationProps>
@@ -132,6 +107,7 @@ export function Home () {
         keyExtractor={item => item.key}
         renderItem={({ item }) => item.render()}
         stickyHeaderIndices={indices}
+        showsVerticalScrollIndicator={false}
         scrollEventThrottle={16}
       />
     </View>
